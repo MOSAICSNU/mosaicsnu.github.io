@@ -85,7 +85,7 @@
 <ul class="check">
   <li>A Windows 10/11 or macOS computer. RAM of at least twice the ND2 file size is recommended (the example file is 0.3 GB, so most computers are fine).</li>
   <li>An internet connection. Required components are downloaded automatically on first launch.</li>
-  <li>The MOSAIC program (ZIP) and the example file <code>MOSAIC_example_2Hz.nd2</code> from the <a href="index.html#downloads">home page</a></li>
+  <li>The MOSAIC program (ZIP) from the <a href="index.html#downloads">home page</a>, and the example file <code>MOSAIC_example_2Hz.nd2</code> (available upon request; see <a href="index.html#downloads">Downloads</a>)</li>
   <li>A working folder on a local disk. <b>Avoid Dropbox, OneDrive, iCloud, and Google Drive folders.</b></li>
 </ul>
 
@@ -107,7 +107,7 @@
 <ol>
   <li>From <a href="index.html#downloads">Downloads</a>, get <b>MOSAIC v0.2.0 (ZIP)</b>.</li>
   <li>Right-click the ZIP → <b>Extract All</b> to a local folder, for example <code>C:\MOSAIC</code>.</li>
-  <li>From the same page, download <code>MOSAIC_example_2Hz.nd2</code> and keep it somewhere easy to find, such as <code>C:\MOSAIC-data</code>.</li>
+  <li>Request <code>MOSAIC_example_2Hz.nd2</code> as described on the same page, and keep the file somewhere easy to find, such as <code>C:\MOSAIC-data</code>.</li>
 </ol>
 <div class="note"><span class="tag">Why synced folders should be avoided</span><p>The first launch installs several hundred MB of components. If a sync client locks those files to upload them, installation stops with <code>WinError 32</code>. Results (<code>_ana</code> folder) are also written next to the ND2 file, so keep ND2 files in a writable local location too.</p></div>
 
@@ -458,7 +458,7 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 <tr><td class="v">5</td><td>Peak cutoff</td><td>Start at 3</td><td>Lower if beats are missed; raise if noise is detected</td></tr>
 <tr><td class="v">6</td><td>Photobleaching</td><td>Only when the baseline visibly drifts; default settings</td><td>Red points lie only on the flat bottom</td></tr>
 <tr><td class="v">7</td><td>Before start</td><td>50 ms (shorter than the flat interval between beats)</td><td>The average graph is flat left of 0 ms</td></tr>
-<tr><td class="v">8</td><td>Decay levels</td><td>10 / 50 / 90 % (manuscript)</td><td>Many NA values: check that the analysis window (Pacing interval) is not too short</td></tr>
+<tr><td class="v">8</td><td>Decay levels</td><td>10 / 50 / 90 %</td><td>Many NA values: check that the analysis window (Pacing interval) is not too short</td></tr>
 </table></div>
 <div class="note"><span class="tag">When reporting</span><p>In papers and reports, state the <b>Pacing interval, Peak cutoff, Before start, whether photobleaching correction was applied</b>, and the MOSAIC version (v0.2.0).</p></div>
 

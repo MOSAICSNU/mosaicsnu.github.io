@@ -85,7 +85,7 @@
 <ul class="check">
   <li>Windows 10/11 또는 macOS 컴퓨터. RAM은 분석할 ND2 파일 크기의 2배 이상을 권장합니다(예제 파일은 0.3 GB라 대부분의 컴퓨터에서 됩니다).</li>
   <li>인터넷 연결. 첫 실행 때 필요한 부품을 자동으로 내려받습니다.</li>
-  <li><a href="index.html#downloads">홈페이지</a>에서 받은 MOSAIC 프로그램(ZIP)과 예제 파일 <code>MOSAIC_example_2Hz.nd2</code></li>
+  <li><a href="index.html#downloads">홈페이지</a>에서 받은 MOSAIC 프로그램(ZIP)과 예제 파일 <code>MOSAIC_example_2Hz.nd2</code>(요청 시 제공, <a href="index.html#downloads">다운로드</a> 참고)</li>
   <li>로컬 디스크의 작업 폴더. <b>Dropbox, OneDrive, iCloud, Google Drive 폴더는 피하세요.</b></li>
 </ul>
 
@@ -107,7 +107,7 @@
 <ol>
   <li><a href="index.html#downloads">홈페이지 다운로드</a>에서 <b>MOSAIC v0.2.0 (ZIP)</b>을 받습니다.</li>
   <li>ZIP 파일을 오른쪽 클릭 → <b>압축 풀기</b>로 로컬 폴더에 풉니다. 예: <code>C:\MOSAIC</code></li>
-  <li>같은 페이지에서 예제 파일 <code>MOSAIC_example_2Hz.nd2</code>를 받아 알기 쉬운 곳(예: <code>C:\MOSAIC-data</code>)에 둡니다.</li>
+  <li>같은 페이지의 안내에 따라 예제 파일 <code>MOSAIC_example_2Hz.nd2</code>를 요청해 받고, 알기 쉬운 곳(예: <code>C:\MOSAIC-data</code>)에 둡니다.</li>
 </ol>
 <div class="note"><span class="tag">동기화 폴더를 피해야 하는 이유</span><p>첫 실행 때 수백 MB의 부품을 설치하는데, 동기화 프로그램이 그 파일들을 동시에 올리려고 잠그면 설치가 <code>WinError 32</code> 오류로 중단됩니다. 또 결과 폴더(<code>_ana</code>)가 ND2 파일 옆에 만들어지므로 ND2 파일도 쓰기 가능한 로컬 위치에 두는 것이 좋습니다.</p></div>
 
@@ -458,7 +458,7 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 <tr><td class="v">5</td><td>Peak cutoff</td><td>3에서 시작</td><td>빠진 박동이 있으면 낮추고, 잡음이 잡히면 올림</td></tr>
 <tr><td class="v">6</td><td>광퇴색 보정</td><td>기저선이 눈에 띄게 기울 때만. 기본값 사용</td><td>빨간 점이 바닥에만 있는지</td></tr>
 <tr><td class="v">7</td><td>Before start</td><td>50 ms (박동 사이 평평한 구간보다 짧게)</td><td>평균 그래프의 0 ms 왼쪽이 평평한지</td></tr>
-<tr><td class="v">8</td><td>Decay 수준</td><td>10 / 50 / 90 % (논문 기준)</td><td>NA가 많으면 분석 창(Pacing interval)이 짧은지 확인</td></tr>
+<tr><td class="v">8</td><td>Decay 수준</td><td>10 / 50 / 90 %</td><td>NA가 많으면 분석 창(Pacing interval)이 짧은지 확인</td></tr>
 </table></div>
 <div class="note"><span class="tag">보고할 때</span><p>논문이나 보고서에는 사용한 <b>Pacing interval, Peak cutoff, Before start, 광퇴색 보정 여부</b>와 MOSAIC 버전(v0.2.0)을 함께 적어 주세요.</p></div>
 
