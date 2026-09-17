@@ -8,6 +8,7 @@ cd "$PROJECT_DIR"
 create_venv() {
   echo "Creating Python virtual environment..."
   python3 -m venv "$PROJECT_DIR/.venv"
+  "$APP_PYTHON" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else "Python 3.10 or newer is required")'
   "$APP_PYTHON" -m pip install -U pip
   "$APP_PYTHON" -m pip install -e .
 }
@@ -21,7 +22,8 @@ elif ! "$APP_PYTHON" -c "import sys" >/dev/null 2>&1; then
   create_venv
 fi
 
-if ! "$APP_PYTHON" -c "import nd2, numpy, PySide6, pyqtgraph, scipy" >/dev/null 2>&1; then
+"$APP_PYTHON" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else "Python 3.10 or newer is required; recreate the old .venv")'
+if ! "$APP_PYTHON" tools/check_environment.py >/dev/null 2>&1; then
   echo "Installing required Python packages..."
   "$APP_PYTHON" -m pip install -e .
 fi

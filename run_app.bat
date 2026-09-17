@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal EnableExtensions
 
 cd /d "%~dp0"
 set "PROJECT_DIR=%CD%"
@@ -10,15 +10,14 @@ if errorlevel 1 goto venv_failed
 
 "%APP_PYTHON%" -c "import sys" >nul 2>nul
 if errorlevel 1 (
-  set "VENV_BACKUP=.venv-backup-%RANDOM%%RANDOM%"
-  echo Backing up an unusable virtual environment to %VENV_BACKUP%...
-  ren ".venv" "%VENV_BACKUP%"
-  if errorlevel 1 goto venv_failed
-  call :create_venv
+  call :repair_venv
   if errorlevel 1 goto venv_failed
 )
 
-"%APP_PYTHON%" -c "import nd2, numpy, PySide6, pyqtgraph, scipy" >nul 2>nul
+"%APP_PYTHON%" -c "import sys; sys.exit(sys.version_info < (3, 10))" >nul 2>nul
+if errorlevel 1 goto venv_failed
+
+"%APP_PYTHON%" tools\check_environment.py >nul 2>nul
 if errorlevel 1 (
   echo Installing Python packages...
   "%APP_PYTHON%" -m pip install -e .
@@ -34,7 +33,7 @@ exit /b 0
 
 :venv_failed
 echo.
-echo Failed to create .venv. Install Python 3.9 or newer, then try again.
+echo Python 3.10 or newer is required. If .venv uses an older Python, rename it and try again.
 pause
 exit /b 1
 
@@ -60,9 +59,20 @@ if not errorlevel 1 (
 )
 if errorlevel 1 exit /b 1
 
+"%APP_PYTHON%" -c "import sys; sys.exit(sys.version_info < (3, 10))"
+if errorlevel 1 exit /b 1
+
 "%APP_PYTHON%" -m pip install -U pip
 if errorlevel 1 exit /b 1
 
 "%APP_PYTHON%" -m pip install -e .
 if errorlevel 1 exit /b 1
 exit /b 0
+
+:repair_venv
+set "VENV_BACKUP=.venv-backup-%RANDOM%%RANDOM%"
+echo Backing up an unusable virtual environment to %VENV_BACKUP%...
+ren ".venv" "%VENV_BACKUP%"
+if errorlevel 1 exit /b 1
+call :create_venv
+exit /b %errorlevel%

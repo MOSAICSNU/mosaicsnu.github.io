@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
 from scipy.optimize import least_squares
 from .constants import (
     GRAPH_FOREGROUND,
+    TRANSIENT_MINIMUM_PEAK_DISTANCE_FRACTION,
     SR_CALCIUM_DETECTION_SMOOTH_S,
     TRANSIENT_RECOVERY_FRACTION,
     TRANSIENT_RECOVERY_HOLD_S,
@@ -61,6 +62,7 @@ class TransientAnalysisMixin:
         self.clear_sr_calcium_analysis()
 
     def clear_transient_analysis(self) -> None:
+        self.transient_analysis_settings = None
         self.clear_transient_plot_items()
         self.transient_common_time = np.array([], dtype=float)
         self.transient_snippets = np.empty((0, 0), dtype=float)
@@ -79,6 +81,9 @@ class TransientAnalysisMixin:
             self.calculate_traces()
         if not self.roi_traces:
             self.info_label.setText("No ROI traces available for transient analysis.")
+            return
+        if not self.traces_match_rois():
+            self.info_label.setText("ROI geometry changed. Press Calculate again before transient analysis.")
             return
 
         self.transient_table_decay_percents = self.transient_decay_percent_values()
@@ -106,6 +111,7 @@ class TransientAnalysisMixin:
         self.transient_common_time = common_time
         self.transient_snippets = snippets
         self.transient_records = records
+        self.transient_analysis_settings = self.capture_analysis_settings()
 
         suffix_parts = []
         if self.transient_window_note:
@@ -616,6 +622,8 @@ class TransientAnalysisMixin:
         trace: np.ndarray,
         interval_start: float,
         interval_end: float,
+        *,
+        for_baseline_mask: bool = False,
     ) -> list[dict[str, object]]:
         """Measure peaks that pass stable-baseline, recovery, and shape gates."""
         mask = (time_s >= interval_start) & (time_s <= interval_end)
@@ -639,18 +647,21 @@ class TransientAnalysisMixin:
             1,
             int(round(max(self.transient_pacing_interval_s(), dt) / dt)),
         )
+        # Expected pacing is not an exact refractory period. Allow 10% timing
+        # variation (including frame quantization) without shortening the
+        # recovery/decay measurement window.
+        minimum_peak_distance = max(1, int(np.floor(
+            pacing_interval_points * TRANSIENT_MINIMUM_PEAK_DISTANCE_FRACTION
+        )))
         peak_indices = self.find_prominent_peaks(
             smooth_trace,
             min_prominence,
-            pacing_interval_points,
+            minimum_peak_distance,
         )
-        peak_indices = self.apply_recovery_gate(
-            smooth_trace,
-            peak_indices,
-            pacing_interval_points,
-            dt,
-            noise,
-        )
+        if not for_baseline_mask:
+            peak_indices = self.apply_recovery_gate(
+                smooth_trace, peak_indices, pacing_interval_points, dt, noise
+            )
 
         events: list[dict[str, object]] = []
         for peak_index, _peak_prominence in peak_indices:
@@ -664,12 +675,14 @@ class TransientAnalysisMixin:
             # Re-evaluate prominence against the median of a stable baseline
             # interval before the rise, rather than the lowest single point
             # anywhere in the pacing window.
-            if amplitude < min_prominence:
+            if amplitude <= 0 or amplitude < min_prominence:
                 continue
             peak_time_s = float(segment_time[peak_index])
             window_end_time_s = peak_time_s + self.transient_pacing_interval_s()
             if window_end_time_s > float(segment_time[-1]):
-                continue
+                if not for_baseline_mask:
+                    continue
+                window_end_time_s = float(segment_time[-1])
             window_end_index = int(
                 np.searchsorted(segment_time, window_end_time_s, side="right") - 1
             )
@@ -715,8 +728,11 @@ class TransientAnalysisMixin:
                 dt,
                 window_end_index,
             ):
-                continue
-            if not self.has_transient_upstroke_shape(
+                if not for_baseline_mask:
+                    continue
+                # An incomplete candidate is still not a baseline sample.
+                recovery_index = window_end_index
+            if not for_baseline_mask and not self.has_transient_upstroke_shape(
                 segment_time,
                 start_index,
                 peak_index,
@@ -817,7 +833,7 @@ class TransientAnalysisMixin:
         dt: float,
         baseline_noise: float,
     ) -> list[tuple[int, float]]:
-        """Keep one candidate for each pacing/recovery window."""
+        """Block candidates only until sustained recovery, not a full cycle."""
         selected: list[tuple[int, float]] = []
         ignore_until_index = -1
 
@@ -847,12 +863,12 @@ class TransientAnalysisMixin:
                 dt,
                 window_end_index,
             )
-            event_window_index = peak_index + self.transient_event_window_points(dt)
-            event_block_index = min(
-                recovery_index,
-                peak_index + min_distance_points,
-            )
-            ignore_until_index = max(event_block_index, event_window_index)
+            if not self.is_complete_transient_recovery(
+                trace, recovery_index, baseline, amplitude, dt, window_end_index
+            ):
+                continue
+            hold_points = max(1, int(round(TRANSIENT_RECOVERY_HOLD_S / max(dt, 1e-12))))
+            ignore_until_index = recovery_index + hold_points - 1
             selected.append((peak_index, prominence))
 
         return selected

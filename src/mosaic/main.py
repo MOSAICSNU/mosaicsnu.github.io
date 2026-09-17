@@ -44,6 +44,7 @@ from .constants import (
     TRANSIENT_DEFAULT_START_FRACTION,
 )
 from .movie import MovieRoiMixin
+from . import __version__
 from .persistence import PersistenceMixin
 from .photobleaching import PhotobleachingMixin
 from .transient import TransientAnalysisMixin
@@ -70,6 +71,11 @@ class MainWindow(
         self.current_path: Path | None = None
         self.last_open_directory = PROJECT_ROOT
         self.movie_stack: np.ndarray | None = None
+        self.display_levels = (0.0, 255.0)
+        self.interpolated_timestamp_count = 0
+        self.transient_analysis_settings = None
+        self.photobleaching_applied_settings = {}
+        self.photobleaching_preview_settings = None
         self.frame_count = 0
         self.image_shape: tuple[int, int] | None = None
         self.frame_times_s: list[float | None] = []
@@ -87,6 +93,7 @@ class MainWindow(
         self.background_trace: np.ndarray | None = None
         self.trace_curves: dict[pg.ROI, tuple[pg.PlotDataItem, pg.PlotDataItem]] = {}
         self.roi_raw_traces: dict[pg.ROI, np.ndarray] = {}
+        self.roi_trace_geometries = {}
         self.roi_traces: dict[pg.ROI, np.ndarray] = {}
         self.bleaching_fit_curves: dict[
             pg.ROI,
@@ -134,7 +141,7 @@ class MainWindow(
         self.detail_range_syncing = False
 
         # Create controls before building the docks that place them.
-        self.setWindowTitle("MOSAIC")
+        self.setWindowTitle(f"MOSAIC {__version__}")
         self.setDockNestingEnabled(True)
         self.setDockOptions(
             QMainWindow.AllowNestedDocks

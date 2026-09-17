@@ -9,6 +9,7 @@ from pathlib import Path
 import nd2
 import numpy as np
 import pyqtgraph as pg
+from .recording import calibrated_times, display_levels, validate_dimensions
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QApplication,
@@ -24,7 +25,6 @@ from .constants import (
     BACKGROUND_RECOMMEND_CANDIDATES,
     BACKGROUND_RECOMMEND_DURATION_S,
     BACKGROUND_ROI_SIZE,
-    DISPLAY_LEVELS,
     PROJECT_ROOT,
     ROI_COLORS,
     ROI_SIZE,
@@ -107,8 +107,14 @@ class MovieRoiMixin:
         try:
             self.reader = nd2.ND2File(path)
             sizes = dict(self.reader.sizes)
+            validate_dimensions(sizes)
             self.frame_count = int(sizes.get("T", 1))
             self.frame_times_s = self.read_frame_times()
+            self.interpolated_timestamp_count = sum(
+                value is None or not np.isfinite(value) for value in self.frame_times_s
+            )
+            self.frame_times_s = calibrated_times(self.frame_times_s).tolist()
+            self.display_levels = display_levels(self.get_frame(0))
             self.build_time_index()
             self.build_graph_time_axis()
             self.configure_time_selection_controls()
@@ -132,7 +138,8 @@ class MovieRoiMixin:
             self.file_label.setText(f"Loaded: {path}")
             self.info_label.setText(
                 f"Loaded ND2 | dtype={dtype} | sizes={sizes} | "
-                "slider preview enabled | playback uses recorded timestamps"
+                f"interpolated timestamps={self.interpolated_timestamp_count} | "
+                "playback uses calibrated timestamps"
             )
             self.update_trace_x_range()
             self.display_frame(0)
@@ -154,7 +161,8 @@ class MovieRoiMixin:
         for event in events:
             try:
                 frame_index = int(event["T Index"])
-                times[frame_index] = float(event["Time [s]"])
+                if 0 <= frame_index < self.frame_count:
+                    times[frame_index] = float(event["Time [s]"])
             except (KeyError, TypeError, ValueError):
                 continue
 
@@ -531,7 +539,7 @@ class MovieRoiMixin:
             frame,
             autoRange=False,
             autoLevels=False,
-            levels=DISPLAY_LEVELS,
+            levels=self.display_levels,
             autoHistogramRange=False,
         )
         self.fit_image_to_view()
@@ -544,7 +552,8 @@ class MovieRoiMixin:
             return self.movie_stack[frame_index]
         if self.reader is None:
             raise RuntimeError("No ND2 reader is open.")
-        return self.reader.read_frame(frame_index)
+        frame = np.asarray(self.reader.read_frame(frame_index))
+        return frame.reshape(int(self.reader.sizes["Y"]), int(self.reader.sizes["X"]))
 
     def ensure_movie_loaded(self) -> np.ndarray:
         if self.movie_stack is not None:
@@ -556,7 +565,9 @@ class MovieRoiMixin:
         QApplication.setOverrideCursor(Qt.WaitCursor)
         QApplication.processEvents()
         try:
-            self.movie_stack = self.reader.asarray()
+            self.movie_stack = self.reader.asarray().reshape(
+                self.frame_count, int(self.reader.sizes["Y"]), int(self.reader.sizes["X"])
+            )
         finally:
             QApplication.restoreOverrideCursor()
 
@@ -586,7 +597,7 @@ class MovieRoiMixin:
 
     def apply_fixed_display_levels(self) -> None:
         histogram = self.image_view.getHistogramWidget()
-        histogram.setLevels(*DISPLAY_LEVELS)
+        histogram.setLevels(*self.display_levels)
         self.hide_histogram_panel()
 
     def add_signal_roi(self) -> None:
@@ -1076,6 +1087,8 @@ class MovieRoiMixin:
         )
 
     def clear_rois(self) -> None:
+        self.roi_trace_geometries = {}
+        self.photobleaching_applied_settings = {}
         for roi in self.rois:
             self.image_view.view.removeItem(roi)
         self.rois = []
@@ -1114,6 +1127,7 @@ class MovieRoiMixin:
         self.bleaching_baseline_curves = {}
 
     def clear_photobleaching_preview(self) -> None:
+        self.photobleaching_preview_settings = None
         self.clear_bleaching_fit_curves()
         self.photobleaching_preview_traces = {}
         self.photobleaching_preview_fit_lines = {}
@@ -1127,6 +1141,7 @@ class MovieRoiMixin:
             return
 
         preserve_detail_range = self.detail_plot_has_data
+        self.roi_trace_geometries = {}
         detail_view_range = self.detail_plot.viewRange()
         self.clear_trace_curves()
         self.clear_all_analysis()
@@ -1135,6 +1150,7 @@ class MovieRoiMixin:
         self.photobleaching_corrected = False
         self.background_trace = None
         traces = self.update_all_signal_roi_traces()
+        self.photobleaching_applied_settings = {}
         self.apply_overview_plot_range(traces)
         self.apply_detail_plot_range(
             traces,
@@ -1162,6 +1178,9 @@ class MovieRoiMixin:
         trace = raw_trace - background_trace if background_trace is not None else raw_trace
         self.roi_raw_traces[roi] = trace.copy()
         self.roi_traces[roi] = trace.copy()
+        self.roi_trace_geometries[roi] = (
+            self.serialize_roi(roi), self.serialize_roi(self.background_roi)
+        )
 
         curves = self.trace_curves.get(roi)
         if curves is None:
@@ -1172,6 +1191,14 @@ class MovieRoiMixin:
             detail_curve.setData(self.graph_time_s, trace)
 
         return trace
+
+    def traces_match_rois(self) -> bool:
+        return all(
+            self.roi_trace_geometries.get(roi) == (
+                self.serialize_roi(roi), self.serialize_roi(self.background_roi)
+            )
+            for roi in self.rois
+        )
 
     def update_all_signal_roi_traces(self) -> list[np.ndarray]:
         traces: list[np.ndarray] = []
@@ -1226,8 +1253,8 @@ class MovieRoiMixin:
 
     def update_frame_label(self, frame_index: int) -> None:
         time_text = "time unavailable"
-        if 0 <= frame_index < len(self.frame_times_s):
-            time_s = self.frame_times_s[frame_index]
+        if 0 <= frame_index < len(self.graph_time_s):
+            time_s = self.graph_time_s[frame_index]
             if time_s is not None:
                 time_text = f"{time_s:.6f} s"
 

@@ -1,4 +1,2 @@
-nd2==0.11.3
-numpy>=1.26
-PySide6>=6.7
-pyqtgraph>=0.13
+# Install the project so dependencies have one authoritative definition.
+-e .

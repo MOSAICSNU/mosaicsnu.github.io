@@ -3,12 +3,19 @@
 from __future__ import annotations
 
 import json
+import os
+import platform
+from copy import deepcopy
+from datetime import datetime, timezone
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from xml.sax.saxutils import escape
 import zipfile
 
 import numpy as np
 import pyqtgraph as pg
+from . import __version__
+from .session import find_session_movie, source_fingerprint, source_matches, validate_session, write_session
 from PySide6.QtCore import QPointF, QRectF, Qt, QTimer
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPen, QPolygonF
 from PySide6.QtWidgets import (
@@ -18,16 +25,51 @@ from PySide6.QtWidgets import (
 )
 from .constants import (
     BACKGROUND_ROI_SIZE,
-    DISPLAY_LEVELS,
     GRAPH_FOREGROUND,
     PROJECT_ROOT,
     ROI_SIZE,
     TRANSIENT_DEFAULT_DECAY_PERCENT_VALUES,
+    TRANSIENT_MINIMUM_PEAK_DISTANCE_FRACTION,
+    TRANSIENT_RECOVERY_FRACTION,
+    TRANSIENT_RECOVERY_HOLD_S,
 )
 
 
 class PersistenceMixin:
     """Saves and restores ROI analysis sessions and export files."""
+
+    def software_environment(self) -> dict[str, object]:
+        packages = {}
+        for name in ("nd2", "numpy", "scipy", "PySide6", "pyqtgraph"):
+            try:
+                packages[name] = version(name)
+            except PackageNotFoundError:
+                packages[name] = "unknown"
+        return {"mosaic_version": __version__, "python": platform.python_version(),
+                "platform": platform.platform(), "packages": packages}
+
+    def capture_analysis_settings(self) -> dict[str, object]:
+        return {
+            "mosaic_version": __version__,
+            "analysis_range_s": list(self.transient_region.getRegion()),
+            "pacing_interval_s": self.transient_pacing_interval_s(),
+            "minimum_peak_distance_fraction": TRANSIENT_MINIMUM_PEAK_DISTANCE_FRACTION,
+            "smoothing_s": self.transient_smooth_s(),
+            "peak_cutoff_noise": self.transient_prominence_noise_spinbox.value(),
+            "absolute_prominence": self.transient_min_prominence_spinbox.value(),
+            "before_start_s": self.transient_pre_start_s(),
+            "onset_fraction": self.transient_start_fraction_spinbox.value(),
+            "decay_percents": self.transient_decay_percent_values(),
+            "recovery_fraction": TRANSIENT_RECOVERY_FRACTION,
+            "recovery_hold_s": TRANSIENT_RECOVERY_HOLD_S,
+            "photobleaching": {
+                "fit_range_s": list(self.bleach_fit_window_s()),
+                "pre_padding_s": self.bleach_pre_padding_s(),
+                "post_padding_s": self.bleach_post_padding_s(),
+                "minimum_baseline_fraction": self.bleach_min_baseline_fraction(),
+                "robustness_scale": self.bleach_robustness_scale(),
+            },
+        }
 
     def save_current_roi_analysis(self) -> None:
         if not self.rois:
@@ -41,6 +83,9 @@ class PersistenceMixin:
             return
 
         saved_now: list[dict[str, object]] = []
+        if not self.traces_match_rois():
+            self.info_label.setText("ROI geometry changed. Press Calculate and repeat analysis before Save ROI.")
+            return
         for roi in list(self.rois):
             if roi not in self.roi_traces:
                 continue
@@ -89,7 +134,11 @@ class PersistenceMixin:
             "summary": summary,
             "raw_trace": self.roi_raw_traces.get(roi, np.array([], dtype=float)).copy(),
             "analysis_trace": self.roi_traces.get(roi, np.array([], dtype=float)).copy(),
-            "photobleaching_corrected": self.photobleaching_corrected,
+            "photobleaching_corrected": roi in self.photobleaching_applied_settings,
+            "software": self.software_environment(),
+            "analysis_settings": deepcopy(self.transient_analysis_settings),
+            "photobleaching_settings": deepcopy(self.photobleaching_applied_settings.get(roi)),
+            "background_roi": self.serialize_roi(self.background_roi),
             "transient_time_s": transient_time,
             "transient_mean_trace": transient_trace,
             "transient_event_time_s": self.transient_common_time.copy()
@@ -981,6 +1030,12 @@ class PersistenceMixin:
         ]
 
     def save_analysis_outputs(self) -> None:
+        try:
+            self._save_analysis_outputs()
+        except (OSError, ValueError) as exc:
+            self.info_label.setText(f"Export failed; check the output files before use: {exc}")
+
+    def _save_analysis_outputs(self) -> None:
         if self.current_path is None:
             self.info_label.setText("Open an ND2 file before Save.")
             return
@@ -1020,7 +1075,12 @@ class PersistenceMixin:
 
     def analysis_xlsx_rows(self, entries: list[dict[str, object]]) -> list[list[object]]:
         headers = self.saved_roi_headers_without_use()
-        return [headers, *[self.saved_roi_row_values(entry) for entry in entries]]
+        keys = ["transient_n", "transient_amp", "transient_peak_time_ms", "transient_max_dydt"]
+        keys.extend(f"transient_decay_{percent}_ms" for percent in self.saved_decay_percents)
+        return [headers, *[
+            [str(entry.get("name", "")), *[entry.get("summary", {}).get(key) for key in keys]]
+            for entry in entries
+        ]]
 
     def raw_trace_xlsx_rows(self, entries: list[dict[str, object]]) -> list[list[object]]:
         headers = ["Time s", *[str(entry.get("name", "")) for entry in entries]]
@@ -1245,7 +1305,7 @@ class PersistenceMixin:
         frame = self.get_frame(0)
         if frame.ndim > 2:
             frame = frame[..., 0]
-        low, high = DISPLAY_LEVELS
+        low, high = self.display_levels
         scaled = np.clip(
             (frame.astype(float) - low) / max(high - low, 1) * 255.0,
             0,
@@ -1324,8 +1384,22 @@ class PersistenceMixin:
         )
 
     def save_session_info(self, path: Path) -> None:
+        relative_path = None
+        if self.current_path is not None:
+            try:
+                relative_path = Path(os.path.relpath(self.current_path, path.parent)).as_posix()
+            except ValueError:
+                pass  # Separate Windows drives have no relative path.
         data = {
-            "version": 1,
+            "version": 2,
+            "software": self.software_environment(),
+            "saved_at_utc": datetime.now(timezone.utc).isoformat(),
+            "movie_relative_path": relative_path,
+            "source_identity": source_fingerprint(self.current_path) if self.current_path is not None else None,
+            "recording": {"frame_count": self.frame_count,
+                          "image_shape": list(self.image_shape) if self.image_shape else None,
+                          "interpolated_timestamps": self.interpolated_timestamp_count,
+                          "display_levels": list(self.display_levels)},
             "movie_path": str(self.current_path) if self.current_path is not None else "",
             "saved_decay_percents": self.saved_decay_percents,
             "background_roi": self.serialize_roi(self.background_roi),
@@ -1335,10 +1409,7 @@ class PersistenceMixin:
                 for entry in self.saved_roi_entries
             ],
         }
-        path.write_text(
-            json.dumps(data, indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
+        write_session(path, self.json_safe_value(data))
 
     def serialized_saved_entry(self, entry: dict[str, object]) -> dict[str, object]:
         """Preserve the analysis_info JSON schema for backward-compatible loading."""
@@ -1352,6 +1423,10 @@ class PersistenceMixin:
             "raw_trace": self.json_array(entry.get("raw_trace")),
             "analysis_trace": self.json_array(entry.get("analysis_trace")),
             "photobleaching_corrected": bool(entry.get("photobleaching_corrected", False)),
+            "software": self.json_safe_value(entry.get("software")),
+            "analysis_settings": self.json_safe_value(entry.get("analysis_settings")),
+            "photobleaching_settings": self.json_safe_value(entry.get("photobleaching_settings")),
+            "background_roi": self.json_safe_value(entry.get("background_roi")),
             "transient_time_s": self.json_array(entry.get("transient_time_s")),
             "transient_mean_trace": self.json_array(entry.get("transient_mean_trace")),
             "transient_event_time_s": self.json_array(entry.get("transient_event_time_s")),
@@ -1386,16 +1461,28 @@ class PersistenceMixin:
     def load_analysis_info(self, path: Path) -> None:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
+            validate_session(data)
+        except (OSError, ValueError) as exc:
             self.info_label.setText(f"Could not load info file: {exc}")
             return
 
-        movie_path = Path(str(data.get("movie_path", "")))
-        if not movie_path.exists():
-            self.info_label.setText(f"Movie file not found: {movie_path}")
-            return
+        movie_path = find_session_movie(data, path)
+        if movie_path is None:
+            replacement, _ = QFileDialog.getOpenFileName(
+                self, "Locate the original ND2 recording for this session",
+                str(path.parent), "ND2 files (*.nd2)",
+            )
+            if not replacement:
+                self.info_label.setText("Session loading cancelled: source recording not located.")
+                return
+            movie_path = Path(replacement)
+            if not source_matches(movie_path, data.get("source_identity")):
+                self.info_label.setText("Selected recording does not match the session source.")
+                return
 
         self.load_nd2(movie_path)
+        if self.reader is None:
+            return
         self.restore_background_roi_from_info(data.get("background_roi"))
         self.saved_decay_percents = [
             int(value)
@@ -1426,6 +1513,10 @@ class PersistenceMixin:
                 "raw_trace": self.array_from_json(entry_data.get("raw_trace")),
                 "analysis_trace": self.array_from_json(entry_data.get("analysis_trace")),
                 "photobleaching_corrected": bool(entry_data.get("photobleaching_corrected", False)),
+                "software": entry_data.get("software"),
+                "analysis_settings": entry_data.get("analysis_settings"),
+                "photobleaching_settings": entry_data.get("photobleaching_settings"),
+                "background_roi": entry_data.get("background_roi"),
                 "transient_time_s": self.array_from_json(entry_data.get("transient_time_s")),
                 "transient_mean_trace": self.array_from_json(entry_data.get("transient_mean_trace")),
                 "transient_event_time_s": self.array_from_json(
@@ -1458,6 +1549,8 @@ class PersistenceMixin:
         self.clear_active_roi_workspace_after_save()
         self.info_label.setText(
             f"Loaded {len(restored_entries)} saved ROI(s) from {path.name}."
+            + (" Legacy session: original analysis settings were not recorded."
+               if data.get("version", 1) == 1 else "")
         )
 
     def restore_background_roi_from_info(self, roi_info: object) -> None:

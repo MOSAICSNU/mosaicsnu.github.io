@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
+
 import numpy as np
 import pyqtgraph as pg
 from PySide6.QtCore import Qt
@@ -24,6 +26,9 @@ class PhotobleachingMixin:
             return
         if self.graph_time_s.size < 3:
             self.info_label.setText("Time axis is too short for photobleaching correction.")
+            return
+        if not self.traces_match_rois():
+            self.info_label.setText("ROI geometry changed. Press Calculate again before photobleaching.")
             return
 
         preview_traces: dict[pg.ROI, np.ndarray] = {}
@@ -61,6 +66,7 @@ class PhotobleachingMixin:
         self.photobleaching_preview_fit_lines = fit_lines
         self.photobleaching_preview_baseline_masks = baseline_masks
         self.photobleaching_preview_modes = modes
+        self.photobleaching_preview_settings = self.capture_analysis_settings()
         self.draw_bleaching_preview_curves(fit_lines, baseline_masks)
         self.update_photobleaching_controls_enabled()
 
@@ -78,6 +84,9 @@ class PhotobleachingMixin:
         )
 
     def confirm_photobleaching(self) -> None:
+        if not self.traces_match_rois():
+            self.info_label.setText("ROI geometry changed. Press Calculate again before photobleaching.")
+            return
         if not self.photobleaching_preview_traces:
             self.info_label.setText(
                 "Cal. Photobleaching before confirming correction."
@@ -90,6 +99,11 @@ class PhotobleachingMixin:
         }
         for roi, corrected_trace in self.photobleaching_preview_traces.items():
             self.roi_traces[roi] = corrected_trace.copy()
+
+        self.photobleaching_applied_settings = {
+            roi: {"settings": deepcopy(self.photobleaching_preview_settings), "mode": mode}
+            for roi, mode in self.photobleaching_preview_modes.items()
+        }
 
         self.photobleaching_corrected = True
         self.clear_all_analysis()
@@ -114,6 +128,7 @@ class PhotobleachingMixin:
             for roi, trace in self.roi_raw_traces.items()
         }
         self.photobleaching_corrected = False
+        self.photobleaching_applied_settings = {}
         self.clear_photobleaching_preview()
         self.reset_photobleaching_parameters()
         self.clear_all_analysis()
@@ -191,8 +206,9 @@ class PhotobleachingMixin:
         events = self.detect_transient_events(
             time_s,
             trace,
-            interval_start,
-            interval_end,
+            max(float(time_s[0]), interval_start - self.transient_pacing_interval_s()),
+            min(float(time_s[-1]), interval_end + self.transient_pacing_interval_s()),
+            for_baseline_mask=True,
         )
         for event in events:
             start = float(event["start_time_s"]) - self.bleach_pre_padding_s()

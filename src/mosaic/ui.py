@@ -579,8 +579,9 @@ class InterfaceMixin:
             "Optional absolute peak cutoff. Leave at 0 for noise-based detection."
         )
         self.transient_pacing_interval_spinbox.setToolTip(
-            "Fixed recovery-analysis window after each detected transient peak. "
-            "Only complete transients within this pacing interval are used."
+            "Default 450 ms for 2 Hz pacing (stimulation interval x 0.9). Peaks "
+            "may be up to 10% closer than this value. It also sets the "
+            "recovery-analysis window after each peak."
         )
         self.transient_pre_start_spinbox.setToolTip(
             "How much trace to show before the detected transient start."
