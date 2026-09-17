@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MOSAIC User Guide</title>
-<meta name="description" content="MOSAIC v0.1.0 user guide: installation, a step-by-step example analysis, and every button and setting explained.">
+<meta name="description" content="MOSAIC v0.2.0 user guide: installation, a step-by-step example analysis, and every button and setting explained.">
 <link rel="alternate" hreflang="ko" href="guide-ko.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,7 @@
 <header class="bar">
   <div class="bar-in">
     <a class="brand" href="index.html">MOSAIC<small>User Guide</small></a>
-    <span class="ver">v0.1.0</span>
+    <span class="ver">v0.2.0</span>
     <span class="spacer"></span>
     <a class="navlink" href="index.html#downloads">Downloads</a>
     <nav class="langs" aria-label="Language">
@@ -68,7 +68,7 @@
 <div class="prose">
 
 <h1 id="start">MOSAIC User Guide</h1>
-<p class="lede">This guide describes the installation of MOSAIC version 0.1.0, a complete analysis of the example recording, and every control and setting.</p>
+<p class="lede">This guide describes the installation of MOSAIC version 0.2.0, a complete analysis of the example recording, and every control and setting.</p>
 
 <p><b>MOSAIC</b> (Multi-ROI Optical System for Analysis of Intracellular Calcium) analyzes cardiomyocyte Ca²⁺ transients in high-speed Nikon ND2 fluorescence recordings. You place ROIs over cells or parts of cells in one field of view; MOSAIC detects the calcium signal of each beat and reports amplitude, time to peak, maximum rising rate, and decay times.</p>
 
@@ -94,7 +94,7 @@
 <p>Installation is needed once per computer. Afterwards you start MOSAIC by double-clicking one file.</p>
 
 <h3 id="python"><span class="secno">1.1</span>Install Python</h3>
-<p>MOSAIC is written in Python and needs Python 3.9 or later. Skip this if it is already installed.</p>
+<p>MOSAIC is written in Python and needs Python 3.10 or later. Skip this if it is already installed.</p>
 <ol>
   <li>At <a href="https://www.python.org/downloads/">python.org/downloads</a>, click <b>Download Python</b>.</li>
   <li>Run the installer.</li>
@@ -105,7 +105,7 @@
 
 <h3 id="download"><span class="secno">1.2</span>Get MOSAIC</h3>
 <ol>
-  <li>From <a href="index.html#downloads">Downloads</a>, get <b>MOSAIC v0.1.0 (ZIP)</b>.</li>
+  <li>From <a href="index.html#downloads">Downloads</a>, get <b>MOSAIC v0.2.0 (ZIP)</b>.</li>
   <li>Right-click the ZIP → <b>Extract All</b> to a local folder, for example <code>C:\MOSAIC</code>.</li>
   <li>From the same page, download <code>MOSAIC_example_2Hz.nd2</code> and keep it somewhere easy to find, such as <code>C:\MOSAIC-data</code>.</li>
 </ol>
@@ -246,10 +246,9 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 </div></section>
 
 <section class="step" id="t6"><div>
-<h3><span class="secno">3.6</span>Set Pacing interval first</h3>
-<p>The default in v0.1.0 is <b>500 ms</b>. For this example walkthrough, manually change <b>Pacing interval</b> to <span class="fld">450 ms</span> (click the box, type 450, press <kbd>Enter</kbd>).</p>
-<div class="warn"><span class="tag">Why 450 ms rather than 500 ms</span>
-<p>In the comparison for this example, 500 ms yielded 7 detected beats and 450 ms yielded 14. This walkthrough therefore uses a manually entered value of 450 ms in the unchanged v0.1.0 app. This is not an app modification or a fixed rule for all stimulation frequencies. Details are in <a href="#limits">7. Known limitations</a>.</p>
+<h3><span class="secno">3.6</span>Check Pacing interval first</h3>
+<p>In Transient analysis, check that <b>Pacing interval</b> is <span class="fld">450 ms</span>. This is the default for 2-Hz pacing, so the example needs no change. For other pacing rates, see <a href="#settings">5. Choosing settings</a>.</p>
+<div class="note"><span class="tag">Set it before photobleaching</span>
 <p>Photobleaching correction also uses this value to locate beats, so set it <b>before</b> photobleaching correction.</p></div>
 </div></section>
 
@@ -312,8 +311,8 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
   <a href="assets/img/10-save-roi.png"><img src="assets/img/10-save-roi.png" alt="After Save ROI, the ROI 1 summary appears in the Saved ROI table" loading="lazy" width="1600" height="1000"></a>
   <figcaption>The ROI is locked in white with a number, and one summary row is added to the <b>Saved ROI</b> table at the lower right.</figcaption>
 </figure>
-<div class="ok"><span class="tag">Check: expected values for the example (v0.1.0)</span>
-<p>These example values use the original v0.1.0 with Pacing interval manually set to 450 ms and photobleaching correction applied, not the default 500 ms. Values vary with ROI position.</p>
+<div class="ok"><span class="tag">Check: expected values for the example (v0.2.0)</span>
+<p>Values vary slightly with ROI position.</p>
 <div class="tw"><table>
 <tr><th>Tran N</th><th>Tran Amp dF/F0</th><th>Tran Peak ms</th><th>Tran Max d(F/F0)/dt</th><th>Decay 10% ms</th><th>Decay 50% ms</th><th>Decay 90% ms</th></tr>
 <tr><td class="v">14</td><td class="v">≈ 1.47</td><td class="v">≈ 28.6</td><td class="v">≈ 74</td><td class="v">≈ 23.6</td><td class="v">≈ 61.5</td><td class="v">≈ 133.5</td></tr>
@@ -344,7 +343,7 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
   <a href="assets/img/12-load-info.png"><img src="assets/img/12-load-info.png" alt="Saved ROI 1 and its analysis restored with Load Info" loading="lazy" width="1600" height="1000"></a>
   <figcaption>Restored ROI 1 with its average transient and event table</figcaption>
 </figure>
-<div class="warn"><span class="tag">Note</span><p>The JSON stores the <b>path</b> of the ND2 file. If the ND2 file is moved or renamed after export, <code>Movie file not found</code> appears and it cannot be loaded.</p></div>
+<div class="warn"><span class="tag">Note</span><p>The JSON stores the <b>path</b> of the ND2 file. If the ND2 file has been moved, MOSAIC looks next to the results folder and otherwise asks you to select the original file. Results are restored as saved, not recalculated.</p></div>
 <p>This completes the analysis procedure. Analyze your own recordings in the same order.</p>
 </div></section>
 
@@ -368,7 +367,7 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 <tr><td class="n"><span class="num">5</span></td><td><span class="btn">Load Info</span></td><td>Restores a previous analysis from <code>analysis_info.json</code>.</td></tr>
 <tr><td colspan="3"><b>Playback</b></td></tr>
 <tr><td class="n"><span class="num">6</span></td><td><span class="btn">Play</span> / <span class="btn">Pause</span></td><td>Plays or pauses in real time using the recorded timestamps. Use it to see whether cells beat or move.</td></tr>
-<tr><td class="n"><span class="num">7</span></td><td>Frame label</td><td><code>Frame: current / total | Time: …</code>. Time is the value stored in the ND2 file and can be a very large number (<a href="#limits">limitation 6</a>).</td></tr>
+<tr><td class="n"><span class="num">7</span></td><td>Frame label</td><td><code>Frame: current / total | Time: …</code>. Time is measured from the first frame.</td></tr>
 <tr><td class="n"><span class="num">8</span></td><td>Frame slider</td><td>Drag to move to a frame; the white dashed line in the graphs follows.</td></tr>
 <tr><td class="n"><span class="num">9</span></td><td>Frame number box</td><td>Type a frame number. It starts at 0 (the Frame label starts at 1).</td></tr>
 <tr><td colspan="3"><b>Background</b></td></tr>
@@ -421,7 +420,7 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 <tr><th class="n">#</th><th>Name</th><th>What it does · how to set it</th></tr>
 <tr><td class="n"><span class="num">1</span></td><td><span class="btn">Calculate transients</span></td><td>Detects beats in the Tran. range and builds the average and table. Click again after changing settings.</td></tr>
 <tr><td class="n"><span class="num">2</span></td><td>Peak cutoff <span class="v">3 ×</span></td><td>How many times the baseline noise a peak must exceed to count as a beat. Raise it (4–5) if noise is detected; lower it (2) if small beats are missed.</td></tr>
-<tr><td class="n"><span class="num">3</span></td><td>Pacing interval <span class="v">500 ms</span></td><td>Minimum spacing between beats and the analysis window after each beat. The default is 500 ms; this example uses a manually entered value of 450 ms. <a href="#limits">Limitation 1</a></td></tr>
+<tr><td class="n"><span class="num">3</span></td><td>Pacing interval <span class="v">450 ms</span></td><td>Sets the minimum spacing between beats and the analysis window after each beat. Default for 2-Hz pacing; for other rates see <a href="#settings">5. Choosing settings</a>.</td></tr>
 <tr><td class="n"><span class="num">4</span></td><td>Before start <span class="v">50 ms</span></td><td>Period before onset; its mean is F₀ (reference brightness). Keep it within the flat interval between beats.</td></tr>
 <tr><td class="n"><span class="num">5–7</span></td><td>Decay 1 / 2 / 3 <span class="v">10 / 50 / 90 %</span></td><td>Which decay levels (percent of amplitude lost after the peak) to report. Click <span class="btn">Calculate transients</span> after changing them.</td></tr>
 <tr><td class="n"><span class="num">8</span></td><td>Average transient graph</td><td>Thin lines = ticked individual beats; thick line = mean (F/F₀). X axis: time from onset.</td></tr>
@@ -455,13 +454,13 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 <tr><td class="v">1</td><td>Background ROI</td><td>No cells or debris, not in the dark image corner shadow; as large as possible</td><td>Play the movie and make sure nothing passes through</td></tr>
 <tr><td class="v">2</td><td>Cell ROI</td><td>Slightly inside the cell border, not overlapping neighbors</td><td>The cell stays inside the ROI across frames</td></tr>
 <tr><td class="v">3</td><td>Tran. range</td><td>Stable pacing only, with at least one Pacing interval after the last beat</td><td>Count the peaks in the range</td></tr>
-<tr><td class="v">4</td><td>Pacing interval</td><td>Default: 500 ms. Manually use 450 ms for this example; for other recordings, choose the value by inspecting waveforms and detected events</td><td><b>Tran N ≈ range length × pacing frequency</b></td></tr>
+<tr><td class="v">4</td><td>Pacing interval</td><td>Stimulation interval × 0.9 (2 Hz → 450 ms, the default; 1 Hz → 900 ms; 0.5 Hz → 1800 ms)</td><td><b>Tran N ≈ range length × pacing frequency</b></td></tr>
 <tr><td class="v">5</td><td>Peak cutoff</td><td>Start at 3</td><td>Lower if beats are missed; raise if noise is detected</td></tr>
 <tr><td class="v">6</td><td>Photobleaching</td><td>Only when the baseline visibly drifts; default settings</td><td>Red points lie only on the flat bottom</td></tr>
 <tr><td class="v">7</td><td>Before start</td><td>50 ms (shorter than the flat interval between beats)</td><td>The average graph is flat left of 0 ms</td></tr>
 <tr><td class="v">8</td><td>Decay levels</td><td>10 / 50 / 90 % (manuscript)</td><td>Many NA values: check that the analysis window (Pacing interval) is not too short</td></tr>
 </table></div>
-<div class="note"><span class="tag">When reporting</span><p>In papers and reports, state the <b>Pacing interval, Peak cutoff, Before start, whether photobleaching correction was applied</b>, and the MOSAIC version (v0.1.0).</p></div>
+<div class="note"><span class="tag">When reporting</span><p>In papers and reports, state the <b>Pacing interval, Peak cutoff, Before start, whether photobleaching correction was applied</b>, and the MOSAIC version (v0.2.0).</p></div>
 
 <!-- ============ 6. OUTPUTS ============ -->
 <h2 id="outputs"><span class="secno">6</span>Reading the output files</h2>
@@ -477,39 +476,28 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 <p>Sizes for the example: <code>analysis.xlsx</code> 2 KB, <code>rawtrace.xlsx</code> 95 KB, <code>transient.xlsx</code> 8 KB, <code>ROI.jpg</code> 36 KB, <code>analysis_info.json</code> 370 KB.</p>
 
 <!-- ============ 7. LIMITS ============ -->
-<h2 id="limits"><span class="secno">7</span>Known limitations (v0.1.0)</h2>
-<p>These behaviors of the current version are documented so that results can be interpreted correctly. They will be reviewed in a future release; any change will be listed in the release notes.</p>
+<h2 id="limits"><span class="secno">7</span>Known limitations (v0.2.0)</h2>
+<p>These behaviors of the current version are documented so that results can be interpreted correctly. Changes between versions are listed in the release notes.</p>
 
 <div class="warn">
 <span class="tag">Limitation 1</span>
-<h3 style="margin-top:0">Pacing interval and the number of detected beats</h3>
-<p><b>Pacing interval</b> is used both as the minimum spacing between beats and as the analysis window after each beat. When beats occur at an interval <b>equal to or shorter than</b> the value entered, some are not reported and <b>Tran N</b> is smaller than the real number of beats. Photobleaching correction uses the same detection, so missed beats can be included among the baseline points (red points).</p>
-<div class="fig-split">
-<figure>
-  <a href="assets/img/limit-pacing-500ms.png"><img src="assets/img/limit-pacing-500ms.png" alt="Pacing interval 500 ms: only 7 beats detected" loading="lazy" width="1600" height="1000"></a>
-  <figcaption>Example with 500 ms: <b>7</b> beats detected</figcaption>
-</figure>
-<figure>
-  <a href="assets/img/limit-pacing-450ms.png"><img src="assets/img/limit-pacing-450ms.png" alt="Pacing interval 450 ms: 14 beats detected" loading="lazy" width="1600" height="1000"></a>
-  <figcaption>Same data with 450 ms: <b>14</b> beats detected</figcaption>
-</figure>
-</div>
+<h3 style="margin-top:0">Detection criteria and the number of detected beats</h3>
+<p>MOSAIC detects paced transients. A beat is accepted only if it has a stable baseline before the rise, an amplitude above <b>Peak cutoff</b>, a return below 25% of its amplitude for 30 ms, and a rise shorter than its recovery. Slow or abnormal events can be rejected, and a beat is not measured without one <b>Pacing interval</b> of recording after its peak. Photobleaching correction uses the same detection, so missed beats can be included among the baseline points (red points).</p>
 <ul>
-  <li>Manually enter 450 ms for this example; do not assume the same rule applies to every recording.</li>
   <li>Always compare <b>Tran N</b> with the expected number of beats in the range.</li>
   <li>Set Pacing interval before <span class="btn">Cal. Photobleaching</span>.</li>
-  <li>Record and report the value used for each analysis.</li>
+  <li>Record and report the settings used for each analysis.</li>
 </ul>
 </div>
 
 <div class="tw"><table>
 <tr><th>#</th><th>Limitation</th><th>Details and what to do</th></tr>
 <tr><td class="v">2</td><td>Memory</td><td>The first <span class="btn">Calculate</span> loads the whole movie. Required ≈ frames × height × width × bytes per pixel (e.g. 12,406 frames of 600 × 600 8-bit ≈ 4.5 GB). With too little RAM the program becomes very slow or closes.</td></tr>
-<tr><td class="v">3</td><td>Display range</td><td>Fixed 0–255 display. Images above 8 bits look white, but measurements use the original values and are correct.</td></tr>
-<tr><td class="v">4</td><td>ND2 structure</td><td>Single-channel time-lapse (T × Y × X) only. Multi-channel, Z-stack, and multi-position files are not supported.</td></tr>
+<tr><td class="v">3</td><td>Display range</td><td>8-bit images are shown at 0–255; images above 8 bits use contrast limits from the first frame. Display settings never change measured values.</td></tr>
+<tr><td class="v">4</td><td>ND2 structure</td><td>Single-channel time-lapse (T × Y × X) only. Multi-channel, Z-stack, and multi-position files are rejected when opened.</td></tr>
 <tr><td class="v">5</td><td>Fixed internal settings</td><td>Smoothing window 20 ms, onset = 10% of amplitude, recovery = below 25% of amplitude for 30 ms. Measurements use the smoothed trace, so very fast upstrokes can show a slightly longer time to peak.</td></tr>
-<tr><td class="v">6</td><td>Frame time display</td><td>Shows the raw value stored in the ND2 file, which can be very large. Graphs and measurements use time from the first frame.</td></tr>
-<tr><td class="v">7</td><td>Features not in the interface</td><td>The code contains caffeine-induced (SR) Ca²⁺ release analysis, but v0.1.0 has no buttons for it.</td></tr>
+<tr><td class="v">6</td><td>Fixed ROIs</td><td>ROIs do not follow cell contraction or movement. Manual ROI placement can affect results.</td></tr>
+<tr><td class="v">7</td><td>Features not in the interface</td><td>The code contains caffeine-induced (SR) Ca²⁺ release analysis, but v0.2.0 has no buttons for it.</td></tr>
 <tr><td class="v">8</td><td>Not responding</td><td>During movie loading, Auto ROI, and Recommend Background the window appears frozen. Wait for Status to change.</td></tr>
 </table></div>
 
@@ -523,11 +511,11 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 <tr><td>Very slow or closes after <span class="btn">Calculate</span></td><td>Not enough memory</td><td>Close other programs or use a computer with more RAM</td></tr>
 <tr><td>Image is all white or very dark</td><td>Above 8 bits / dim recording</td><td>Display only; measurements are unaffected</td></tr>
 <tr><td><code>No transients detected</code></td><td>Range or settings</td><td>Check the Tran. range → lower Peak cutoff → check Pacing interval → check ROI and background positions</td></tr>
-<tr><td>Tran N lower than the number of beats</td><td>Limitation 1</td><td>Inspect waveforms and detected events; check Pacing interval (450 ms in this example)</td></tr>
+<tr><td>Tran N lower than the number of beats</td><td>Settings or detection criteria (limitation 1)</td><td>Check Pacing interval (stimulation interval × 0.9), leave one Pacing interval after the last peak, then check Peak cutoff</td></tr>
 <tr><td>Decay time is NA</td><td>Trace did not fall to that level within the window</td><td>Leave room at the end of Tran.; check the event</td></tr>
 <tr><td><code>skipped</code> in photobleaching Status</td><td>Too few baseline points</td><td>Lower Base, widen Fit S/E, shorten Pre/Post</td></tr>
 <tr><td><span class="btn">Save</span> is grey</td><td>No saved ROI</td><td>Click <span class="btn">Save ROI</span> first</td></tr>
-<tr><td><code>Movie file not found</code></td><td>ND2 file moved or renamed</td><td>Put it back at the original path</td></tr>
+<tr><td><span class="btn">Load Info</span> asks for the ND2 file</td><td>ND2 file moved or renamed</td><td>Select the original ND2 file</td></tr>
 </table></div>
 
 <!-- ============ 9. GLOSSARY ============ -->
@@ -543,17 +531,12 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
   <dt>Time to peak</dt><dd>Time from onset to peak.</dd>
   <dt>Decay X%</dt><dd>Time after the peak until the amplitude has decreased by X%. Decay 50% is the half-decay time.</dd>
   <dt>Photobleaching</dt><dd>Gradual loss of fluorescence under continuous illumination.</dd>
-  <dt>Pacing interval</dt><dd>Time between electrical stimuli. 2 Hz = 500 ms.</dd>
+  <dt>Pacing interval</dt><dd>MOSAIC setting derived from the time between electrical stimuli; it sets the beat spacing and the analysis window (2 Hz → 450 ms).</dd>
   <dt>Prominence / Peak cutoff</dt><dd>How far a peak rises above its surroundings. Peak cutoff sets the threshold as a multiple of the noise.</dd>
 </dl>
 
-<section id="patch-note" class="note">
-<h2>0.1.1 note (not applied)</h2>
-<p>Proposed change: <b>change the default Pacing interval from 500 ms to 450 ms</b>.</p>
-<p>This guide covers the original <b>v0.1.0</b>, whose default remains <b>500 ms</b>. This change has not been applied to the app. A future 0.1.1 patch would change only this default, leaving the detection algorithm and other functionality unchanged.</p>
-</section>
 <footer>
-<p>MOSAIC v0.1.0 · Screenshots and expected values in this guide were generated automatically with v0.1.0 and the example file. · If you use MOSAIC, please cite the accompanying manuscript (to be added upon publication). · <a href="guide-ko.html" class="lang-switch">한국어판</a></p>
+<p>MOSAIC v0.2.0 · Expected values were checked with v0.2.0 and the example file. Screenshots were captured with an earlier build, so minor details may differ. · If you use MOSAIC, please cite the accompanying manuscript (to be added upon publication). · <a href="guide-ko.html" class="lang-switch">한국어판</a></p>
 </footer>
 </div>
 </main>
@@ -571,5 +554,6 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
   sync();
 })();
 </script>
+<script src="assets/lightbox.js"></script>
 </body>
 </html>

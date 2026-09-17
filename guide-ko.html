@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MOSAIC 사용 설명서</title>
-<meta name="description" content="MOSAIC v0.1.0 한국어 사용 설명서: 설치부터 예제 따라하기, 모든 버튼과 설정값 설명까지.">
+<meta name="description" content="MOSAIC v0.2.0 한국어 사용 설명서: 설치부터 예제 따라하기, 모든 버튼과 설정값 설명까지.">
 <link rel="alternate" hreflang="en" href="guide-en.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,7 @@
 <header class="bar">
   <div class="bar-in">
     <a class="brand" href="index.html">MOSAIC<small>사용 설명서</small></a>
-    <span class="ver">v0.1.0</span>
+    <span class="ver">v0.2.0</span>
     <span class="spacer"></span>
     <a class="navlink" href="index.html#downloads">다운로드</a>
     <nav class="langs" aria-label="언어">
@@ -68,7 +68,7 @@
 <div class="prose">
 
 <h1 id="start">MOSAIC 사용 설명서</h1>
-<p class="lede">MOSAIC 버전 0.1.0의 설치 방법, 예제 파일을 이용한 분석 절차, 각 버튼과 설정값을 설명합니다.</p>
+<p class="lede">MOSAIC 버전 0.2.0의 설치 방법, 예제 파일을 이용한 분석 절차, 각 버튼과 설정값을 설명합니다.</p>
 
 <p><b>MOSAIC</b>(Multi-ROI Optical System for Analysis of Intracellular Calcium)은 Nikon ND2 고속 형광 영상에서 심근세포의 Ca²⁺ 전이(transient)를 분석하는 프로그램입니다. 한 시야 안의 여러 세포나 세포 일부에 ROI를 놓고, 박동마다의 칼슘 신호를 검출해 진폭, time to peak, 최대 상승 속도, 감쇠 시간을 계산합니다.</p>
 
@@ -94,7 +94,7 @@
 <p>설치는 컴퓨터마다 한 번만 하면 됩니다. 이후에는 파일 하나를 더블클릭해서 실행합니다.</p>
 
 <h3 id="python"><span class="secno">1.1</span>Python 설치</h3>
-<p>MOSAIC은 Python으로 만들어져 있어 Python 3.9 이상이 필요합니다. 이미 설치되어 있다면 건너뛰세요.</p>
+<p>MOSAIC은 Python으로 만들어져 있어 Python 3.10 이상이 필요합니다. 이미 설치되어 있다면 건너뛰세요.</p>
 <ol>
   <li><a href="https://www.python.org/downloads/">python.org/downloads</a>에서 <b>Download Python</b> 버튼을 눌러 설치 파일을 받습니다.</li>
   <li>설치 파일을 실행합니다.</li>
@@ -105,7 +105,7 @@
 
 <h3 id="download"><span class="secno">1.2</span>MOSAIC 받기</h3>
 <ol>
-  <li><a href="index.html#downloads">홈페이지 다운로드</a>에서 <b>MOSAIC v0.1.0 (ZIP)</b>을 받습니다.</li>
+  <li><a href="index.html#downloads">홈페이지 다운로드</a>에서 <b>MOSAIC v0.2.0 (ZIP)</b>을 받습니다.</li>
   <li>ZIP 파일을 오른쪽 클릭 → <b>압축 풀기</b>로 로컬 폴더에 풉니다. 예: <code>C:\MOSAIC</code></li>
   <li>같은 페이지에서 예제 파일 <code>MOSAIC_example_2Hz.nd2</code>를 받아 알기 쉬운 곳(예: <code>C:\MOSAIC-data</code>)에 둡니다.</li>
 </ol>
@@ -246,10 +246,9 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 </div></section>
 
 <section class="step" id="t6"><div>
-<h3><span class="secno">3.6</span>Pacing interval 먼저 맞추기</h3>
-<p>v0.1.0의 기본값은 <b>500 ms</b>입니다. 이 예제를 따라할 때만 오른쪽 Transient analysis의 <b>Pacing interval</b>을 <span class="fld">450 ms</span>로 바꿉니다(칸을 누르고 450 입력 후 <kbd>Enter</kbd>).</p>
-<div class="warn"><span class="tag">500 ms가 아닌 450 ms를 입력하는 이유</span>
-<p>이 예제의 비교에서는 Pacing interval 500 ms에서 7개, 450 ms에서 14개가 검출되었습니다. 따라서 예제는 기존 v0.1.0에서 450 ms를 수동 입력하여 진행합니다. 이는 앱 수정이나 모든 자극 주파수에 적용되는 고정 규칙을 뜻하지 않습니다. 자세한 내용은 <a href="#limits">7. 알려진 제약</a>에 있습니다.</p>
+<h3><span class="secno">3.6</span>Pacing interval 먼저 확인하기</h3>
+<p>오른쪽 Transient analysis의 <b>Pacing interval</b>이 <span class="fld">450 ms</span>인지 확인합니다. 2 Hz 자극용 기본값이므로 예제에서는 바꿀 필요가 없습니다. 다른 자극 빈도는 <a href="#settings">5. 설정값 고르는 법</a>을 참고하세요.</p>
+<div class="note"><span class="tag">광퇴색 보정보다 먼저</span>
 <p>광퇴색 보정도 이 값을 써서 박동 위치를 찾으므로, <b>광퇴색 보정보다 먼저</b> 맞춰야 합니다.</p></div>
 </div></section>
 
@@ -312,8 +311,8 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
   <a href="assets/img/10-save-roi.png"><img src="assets/img/10-save-roi.png" alt="Save ROI 후 Saved ROI 표에 ROI 1 요약이 추가된 화면" loading="lazy" width="1600" height="1000"></a>
   <figcaption>ROI가 흰색으로 잠기고 번호가 붙으며, 오른쪽 아래 <b>Saved ROI</b> 표에 요약이 한 줄 추가됩니다.</figcaption>
 </figure>
-<div class="ok"><span class="tag">확인: 예제의 기대값 (v0.1.0)</span>
-<p>아래 값은 원본 v0.1.0에서 Pacing interval을 450 ms로 수동 설정하고 광퇴색 보정을 적용한 예제 결과입니다. 기본값 500 ms의 결과가 아니며, ROI 위치에 따라 달라질 수 있습니다.</p>
+<div class="ok"><span class="tag">확인: 예제의 기대값 (v0.2.0)</span>
+<p>ROI 위치에 따라 조금 달라질 수 있습니다.</p>
 <div class="tw"><table>
 <tr><th>Tran N</th><th>Tran Amp dF/F0</th><th>Tran Peak ms</th><th>Tran Max d(F/F0)/dt</th><th>Decay 10% ms</th><th>Decay 50% ms</th><th>Decay 90% ms</th></tr>
 <tr><td class="v">14</td><td class="v">≈ 1.47</td><td class="v">≈ 28.6</td><td class="v">≈ 74</td><td class="v">≈ 23.6</td><td class="v">≈ 61.5</td><td class="v">≈ 133.5</td></tr>
@@ -344,7 +343,7 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
   <a href="assets/img/12-load-info.png"><img src="assets/img/12-load-info.png" alt="Load Info로 저장된 ROI 1과 분석 결과를 복원한 화면" loading="lazy" width="1600" height="1000"></a>
   <figcaption>복원된 ROI 1과 그 평균 전이, 이벤트 표</figcaption>
 </figure>
-<div class="warn"><span class="tag">주의</span><p>JSON에는 ND2 파일의 <b>경로</b>가 기록됩니다. 내보낸 뒤 ND2 파일을 옮기거나 이름을 바꾸면 <code>Movie file not found</code>가 뜨며 불러올 수 없습니다.</p></div>
+<div class="warn"><span class="tag">주의</span><p>JSON에는 ND2 파일의 <b>경로</b>가 기록됩니다. ND2 파일을 옮겼다면 MOSAIC이 결과 폴더 근처에서 찾고, 찾지 못하면 원본 파일을 선택하라고 묻습니다. 저장된 결과는 다시 계산하지 않고 그대로 복원됩니다.</p></div>
 <p>이상으로 분석의 전 과정을 마칩니다. 자신의 데이터도 같은 순서로 분석합니다.</p>
 </div></section>
 
@@ -368,7 +367,7 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 <tr><td class="n"><span class="num">5</span></td><td><span class="btn">Load Info</span></td><td><code>analysis_info.json</code>으로 이전 분석을 복원합니다.</td></tr>
 <tr><td colspan="3"><b>Playback</b></td></tr>
 <tr><td class="n"><span class="num">6</span></td><td><span class="btn">Play</span> / <span class="btn">Pause</span></td><td>기록된 타임스탬프에 맞춰 실제 속도로 재생·정지합니다. 세포가 박동하는지, 움직이는지 확인할 때 씁니다.</td></tr>
-<tr><td class="n"><span class="num">7</span></td><td>Frame 표시</td><td><code>Frame: 현재 / 전체 | Time: …</code>. Time은 ND2에 저장된 값이라 파일에 따라 매우 큰 숫자일 수 있습니다(<a href="#limits">제약 6</a>).</td></tr>
+<tr><td class="n"><span class="num">7</span></td><td>Frame 표시</td><td><code>Frame: 현재 / 전체 | Time: …</code>. Time은 첫 프레임부터의 시간입니다.</td></tr>
 <tr><td class="n"><span class="num">8</span></td><td>프레임 슬라이더</td><td>끌어서 원하는 프레임으로 이동합니다. 그래프의 흰 점선이 따라 움직입니다.</td></tr>
 <tr><td class="n"><span class="num">9</span></td><td>프레임 번호 칸</td><td>번호를 입력해 이동합니다. 0부터 시작합니다(Frame 표시는 1부터).</td></tr>
 <tr><td colspan="3"><b>Background</b></td></tr>
@@ -421,7 +420,7 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 <tr><th class="n">#</th><th>이름</th><th>설명 · 설정 방법</th></tr>
 <tr><td class="n"><span class="num">1</span></td><td><span class="btn">Calculate transients</span></td><td>Tran. 구간에서 박동을 검출하고 평균·표를 만듭니다. 설정을 바꾸면 다시 누르세요.</td></tr>
 <tr><td class="n"><span class="num">2</span></td><td>Peak cutoff <span class="v">3 ×</span></td><td>봉우리가 기저선 잡음의 몇 배를 넘어야 박동으로 인정할지. 잡음이 박동으로 잡히면 올리고(4–5), 작은 박동이 빠지면 내리세요(2).</td></tr>
-<tr><td class="n"><span class="num">3</span></td><td>Pacing interval <span class="v">500 ms</span></td><td>박동 사이 최소 간격이자 박동 뒤 분석 창. 기본값은 500 ms이며, 이 예제에서는 450 ms를 수동 입력합니다. <a href="#limits">제약 1</a></td></tr>
+<tr><td class="n"><span class="num">3</span></td><td>Pacing interval <span class="v">450 ms</span></td><td>박동 사이 최소 간격과 박동 뒤 분석 창을 정합니다. 2 Hz 자극용 기본값이며, 다른 자극 빈도는 <a href="#settings">5. 설정값 고르는 법</a>을 참고하세요.</td></tr>
 <tr><td class="n"><span class="num">4</span></td><td>Before start <span class="v">50 ms</span></td><td>onset 앞 구간. 이 구간의 평균이 F₀(기준 밝기)가 됩니다. 박동 사이의 평평한 바닥 안에 들어가도록 두세요.</td></tr>
 <tr><td class="n"><span class="num">5–7</span></td><td>Decay 1 / 2 / 3 <span class="v">10 / 50 / 90 %</span></td><td>피크에서 진폭의 몇 %가 줄어든 시점을 보고할지. 바꾼 뒤 <span class="btn">Calculate transients</span>를 다시 누르세요.</td></tr>
 <tr><td class="n"><span class="num">8</span></td><td>평균 전이 그래프</td><td>가는 선 = 체크된 개별 박동, 굵은 선 = 평균(F/F₀). X축은 onset부터의 시간.</td></tr>
@@ -455,13 +454,13 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 <tr><td class="v">1</td><td>배경 ROI</td><td>세포·부유물이 없고 영상 가장자리 그림자가 아닌 곳. 가능한 넓게.</td><td>재생해 보며 그 자리에 아무것도 지나가지 않는지</td></tr>
 <tr><td class="v">2</td><td>세포 ROI</td><td>세포 경계 약간 안쪽, 이웃 세포와 겹치지 않게</td><td>여러 프레임에서 세포가 ROI 밖으로 움직이지 않는지</td></tr>
 <tr><td class="v">3</td><td>Tran. 구간</td><td>자극이 안정된 구간, 끝에 Pacing interval 이상 여유</td><td>구간 안 봉우리 수를 셉니다</td></tr>
-<tr><td class="v">4</td><td>Pacing interval</td><td>기본값 500 ms. 이 예제는 450 ms를 수동 입력하며, 다른 기록은 실제 파형과 검출 결과를 확인하여 설정</td><td><b>Tran N ≈ 구간 길이 × 자극 주파수</b></td></tr>
+<tr><td class="v">4</td><td>Pacing interval</td><td>자극 간격 × 0.9 (2 Hz → 450 ms 기본값, 1 Hz → 900 ms, 0.5 Hz → 1800 ms)</td><td><b>Tran N ≈ 구간 길이 × 자극 주파수</b></td></tr>
 <tr><td class="v">5</td><td>Peak cutoff</td><td>3에서 시작</td><td>빠진 박동이 있으면 낮추고, 잡음이 잡히면 올림</td></tr>
 <tr><td class="v">6</td><td>광퇴색 보정</td><td>기저선이 눈에 띄게 기울 때만. 기본값 사용</td><td>빨간 점이 바닥에만 있는지</td></tr>
 <tr><td class="v">7</td><td>Before start</td><td>50 ms (박동 사이 평평한 구간보다 짧게)</td><td>평균 그래프의 0 ms 왼쪽이 평평한지</td></tr>
 <tr><td class="v">8</td><td>Decay 수준</td><td>10 / 50 / 90 % (논문 기준)</td><td>NA가 많으면 분석 창(Pacing interval)이 짧은지 확인</td></tr>
 </table></div>
-<div class="note"><span class="tag">보고할 때</span><p>논문이나 보고서에는 사용한 <b>Pacing interval, Peak cutoff, Before start, 광퇴색 보정 여부</b>와 MOSAIC 버전(v0.1.0)을 함께 적어 주세요.</p></div>
+<div class="note"><span class="tag">보고할 때</span><p>논문이나 보고서에는 사용한 <b>Pacing interval, Peak cutoff, Before start, 광퇴색 보정 여부</b>와 MOSAIC 버전(v0.2.0)을 함께 적어 주세요.</p></div>
 
 <!-- ============ 6. OUTPUTS ============ -->
 <h2 id="outputs"><span class="secno">6</span>결과 파일 읽는 법</h2>
@@ -477,39 +476,28 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 <p>예제 결과의 크기: <code>analysis.xlsx</code> 2 KB, <code>rawtrace.xlsx</code> 95 KB, <code>transient.xlsx</code> 8 KB, <code>ROI.jpg</code> 36 KB, <code>analysis_info.json</code> 370 KB.</p>
 
 <!-- ============ 7. LIMITS ============ -->
-<h2 id="limits"><span class="secno">7</span>알려진 제약 (v0.1.0)</h2>
-<p>결과를 올바르게 해석할 수 있도록 현재 버전의 동작을 적어 둡니다. 다음 버전에서 검토할 예정이며, 바뀌는 내용은 릴리스 노트에 기록합니다.</p>
+<h2 id="limits"><span class="secno">7</span>알려진 제약 (v0.2.0)</h2>
+<p>결과를 올바르게 해석할 수 있도록 현재 버전의 동작을 적어 둡니다. 버전 간 바뀐 내용은 릴리스 노트에 기록합니다.</p>
 
 <div class="warn">
 <span class="tag">제약 1</span>
-<h3 style="margin-top:0">Pacing interval과 검출되는 박동 수</h3>
-<p><b>Pacing interval</b>은 박동 사이의 최소 간격이면서 박동 뒤 분석 창으로도 쓰입니다. 박동 간격이 입력값과 <b>같거나 짧으면</b> 일부 박동이 보고되지 않아 <b>Tran N</b>이 실제 박동 수보다 작아집니다. 광퇴색 보정도 같은 검출을 쓰므로, 빠진 박동이 기저선 점(빨간 점)에 섞일 수 있습니다.</p>
-<div class="fig-split">
-<figure>
-  <a href="assets/img/limit-pacing-500ms.png"><img src="assets/img/limit-pacing-500ms.png" alt="Pacing interval 500 ms: 7개만 검출" loading="lazy" width="1600" height="1000"></a>
-  <figcaption>예제, 500 ms 입력: <b>7개</b> 검출</figcaption>
-</figure>
-<figure>
-  <a href="assets/img/limit-pacing-450ms.png"><img src="assets/img/limit-pacing-450ms.png" alt="Pacing interval 450 ms: 14개 검출" loading="lazy" width="1600" height="1000"></a>
-  <figcaption>같은 데이터, 450 ms 입력: <b>14개</b> 검출</figcaption>
-</figure>
-</div>
+<h3 style="margin-top:0">검출 기준과 검출되는 박동 수</h3>
+<p>MOSAIC은 자극에 따른 전이를 검출합니다. 상승 전 기저선이 안정적이고, 진폭이 <b>Peak cutoff</b>를 넘고, 진폭 25% 미만으로 30 ms 동안 회복되고, 상승이 회복보다 짧은 박동만 인정합니다. 느리거나 비정상적인 이벤트는 빠질 수 있고, 피크 뒤에 <b>Pacing interval</b>만큼의 기록이 없으면 측정하지 않습니다. 광퇴색 보정도 같은 검출을 쓰므로, 빠진 박동이 기저선 점(빨간 점)에 섞일 수 있습니다.</p>
 <ul>
-  <li>이 예제는 Pacing interval에 450 ms를 수동 입력합니다. 다른 기록에 일률적으로 적용하지 마세요.</li>
   <li><b>Tran N</b>을 구간 안의 예상 박동 수와 항상 비교하세요.</li>
   <li>Pacing interval을 <span class="btn">Cal. Photobleaching</span>보다 먼저 정하세요.</li>
-  <li>분석마다 사용한 값을 기록·보고하세요.</li>
+  <li>분석마다 사용한 설정을 기록·보고하세요.</li>
 </ul>
 </div>
 
 <div class="tw"><table>
 <tr><th>#</th><th>제약</th><th>내용과 대처</th></tr>
 <tr><td class="v">2</td><td>메모리</td><td>처음 <span class="btn">Calculate</span> 때 영상 전체를 메모리에 올립니다. 필요량 ≈ 프레임 × 높이 × 너비 × 픽셀당 바이트 (예: 600 × 600 8-bit 12,406 frames ≈ 4.5 GB). RAM이 부족하면 매우 느려지거나 종료됩니다.</td></tr>
-<tr><td class="v">3</td><td>영상 표시 범위</td><td>0–255 고정 표시. 8-bit 초과 영상은 하얗게 보이지만 측정은 원래 값을 쓰므로 정확합니다.</td></tr>
-<tr><td class="v">4</td><td>ND2 구조</td><td>단일 채널 time-lapse(T × Y × X)만 지원. 다채널·Z-stack·다지점은 미지원.</td></tr>
+<tr><td class="v">3</td><td>영상 표시 범위</td><td>8-bit 영상은 0–255로, 8-bit 초과 영상은 첫 프레임 기준 대비로 표시합니다. 표시 설정은 측정값을 바꾸지 않습니다.</td></tr>
+<tr><td class="v">4</td><td>ND2 구조</td><td>단일 채널 time-lapse(T × Y × X)만 지원. 다채널·Z-stack·다지점 파일은 열 때 거부됩니다.</td></tr>
 <tr><td class="v">5</td><td>고정 내부 설정</td><td>평활 창 20 ms, onset = 진폭 10%, 회복 = 진폭 25% 미만 30 ms 유지. 측정은 평활된 신호로 하므로, 매우 빠른 상승에서는 time to peak가 약간 길게 나올 수 있습니다.</td></tr>
-<tr><td class="v">6</td><td>Frame 시간 표시</td><td>ND2에 저장된 값을 그대로 표시해 매우 큰 숫자일 수 있음. 그래프·측정은 첫 프레임 기준.</td></tr>
-<tr><td class="v">7</td><td>화면에 없는 기능</td><td>카페인 유도(SR) Ca²⁺ 방출 분석 코드가 있으나 v0.1.0 화면에는 버튼이 없습니다.</td></tr>
+<tr><td class="v">6</td><td>고정 ROI</td><td>ROI는 세포 수축이나 움직임을 따라가지 않습니다. 수동 ROI 배치가 결과에 영향을 줄 수 있습니다.</td></tr>
+<tr><td class="v">7</td><td>화면에 없는 기능</td><td>카페인 유도(SR) Ca²⁺ 방출 분석 코드가 있으나 v0.2.0 화면에는 버튼이 없습니다.</td></tr>
 <tr><td class="v">8</td><td>응답 없음</td><td>영상 로딩, Auto ROI, Recommend Background 중에는 창이 멈춘 듯 보입니다. Status가 바뀔 때까지 기다리세요.</td></tr>
 </table></div>
 
@@ -523,11 +511,11 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
 <tr><td><span class="btn">Calculate</span> 뒤 매우 느림·종료</td><td>메모리 부족</td><td>다른 프로그램 종료, RAM 큰 컴퓨터 사용</td></tr>
 <tr><td>영상이 새하얗거나 새까맘</td><td>8-bit 초과 영상 / 원래 어두운 영상</td><td>표시만의 문제입니다. 측정에는 영향 없음</td></tr>
 <tr><td><code>No transients detected</code></td><td>구간·설정 문제</td><td>Tran. 구간 확인 → Peak cutoff 낮추기 → Pacing interval 확인 → ROI·배경 위치 확인</td></tr>
-<tr><td>Tran N이 박동 수보다 적음</td><td>제약 1</td><td>실제 파형과 검출 이벤트를 대조하고 Pacing interval 확인(이 예제: 450 ms)</td></tr>
+<tr><td>Tran N이 박동 수보다 적음</td><td>설정 또는 검출 기준 (제약 1)</td><td>Pacing interval(자극 간격 × 0.9) 확인, 마지막 피크 뒤 Pacing interval만큼 여유 두기, Peak cutoff 확인</td></tr>
 <tr><td>감쇠 시간이 NA</td><td>분석 창 안에서 그 수준까지 안 내려옴</td><td>Tran. 끝에 여유 두기, 이벤트 확인</td></tr>
 <tr><td>광퇴색 Status에 <code>skipped</code></td><td>기저선 점 부족</td><td>Base 낮추기, Fit S/E 넓히기, Pre/Post 줄이기</td></tr>
 <tr><td><span class="btn">Save</span>가 회색</td><td>저장된 ROI 없음</td><td><span class="btn">Save ROI</span> 먼저</td></tr>
-<tr><td><code>Movie file not found</code></td><td>ND2 파일 이동·이름 변경</td><td>원래 경로로 되돌리기</td></tr>
+<tr><td><span class="btn">Load Info</span>가 ND2 파일을 물어봄</td><td>ND2 파일 이동·이름 변경</td><td>원본 ND2 파일 선택</td></tr>
 </table></div>
 
 <!-- ============ 9. GLOSSARY ============ -->
@@ -543,17 +531,12 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
   <dt>Time to peak</dt><dd>onset부터 피크까지 시간.</dd>
   <dt>Decay X%</dt><dd>피크 후 진폭이 X% 줄어들 때까지 시간. Decay 50%는 절반으로 줄어드는 시간.</dd>
   <dt>Photobleaching (광퇴색)</dt><dd>빛에 계속 노출되어 형광이 서서히 약해지는 현상.</dd>
-  <dt>Pacing interval</dt><dd>전기 자극 사이 간격. 2 Hz = 500 ms.</dd>
+  <dt>Pacing interval</dt><dd>전기 자극 간격에서 정하는 MOSAIC 설정값. 박동 간격과 분석 창을 정합니다(2 Hz → 450 ms).</dd>
   <dt>Prominence / Peak cutoff</dt><dd>봉우리가 주변보다 얼마나 솟았는지. Peak cutoff는 그 기준을 잡음의 배수로 정합니다.</dd>
 </dl>
 
-<section id="patch-note" class="note">
-<h2>0.1.1 note (미반영)</h2>
-<p>수정 제안: <b>Pacing interval 기본값을 500 ms에서 450 ms로 변경</b>.</p>
-<p>현재 제공 기준은 원본 <b>v0.1.0</b>이며 기본값은 <b>500 ms</b>입니다. 이 변경은 아직 앱에 반영되지 않았습니다. 향후 0.1.1 패치에서 기본값만 조정하며, 검출 알고리즘과 나머지 기능은 변경하지 않습니다.</p>
-</section>
 <footer>
-<p>MOSAIC v0.1.0 · 이 설명서의 스크린샷과 기대값은 v0.1.0에서 예제 파일로 자동 생성했습니다. · 이 프로그램을 사용하면 함께 발표되는 논문을 인용해 주세요(출판 후 추가 예정). · <a href="guide-en.html" class="lang-switch">English version</a></p>
+<p>MOSAIC v0.2.0 · 기대값은 v0.2.0과 예제 파일로 확인했습니다. 스크린샷은 이전 빌드에서 캡처해 세부가 조금 다를 수 있습니다. · 이 프로그램을 사용하면 함께 발표되는 논문을 인용해 주세요(출판 후 추가 예정). · <a href="guide-en.html" class="lang-switch">English version</a></p>
 </footer>
 </div>
 </main>
@@ -571,5 +554,6 @@ PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
   sync();
 })();
 </script>
+<script src="assets/lightbox.js"></script>
 </body>
 </html>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOSAIC Guide</title>
+<script>
+  // Send readers to the guide in their browser language, keeping any #section.
+  (function () {
+    var ko = (navigator.language || "").toLowerCase().indexOf("ko") === 0;
+    location.replace((ko ? "guide-ko.html" : "guide-en.html") + location.hash);
+  })();
+</script>
+</head>
+<body>
+<p><a href="guide-ko.html">한국어 설명서</a> · <a href="guide-en.html">English guide</a></p>
+</body>
+</html>

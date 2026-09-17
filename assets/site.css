@@ -25,6 +25,7 @@ img{max-width:100%;height:auto;display:block}
 .ver{font:400 13px var(--sans);color:var(--muted)}
 .spacer{flex:1}
 .navlink{font-size:14px;color:var(--link)}
+.navlink.strong{font-size:15px;font-weight:700}
 .langs{display:flex;gap:0;font-size:14px}
 .langs a,.langs button{font:400 14px var(--sans);color:var(--link);background:none;border:0;padding:0 8px;cursor:pointer;text-decoration:underline}
 .langs>*+*{border-left:1px solid var(--rule)}
@@ -74,7 +75,11 @@ summary{cursor:pointer;color:var(--link)}
 /* figures, numbered */
 main{counter-reset:fig}
 figure{margin:18px 0 24px}
-figure a{display:block;border:1px solid var(--rule-strong)}
+figure a{display:block;border:1px solid var(--rule-strong);cursor:zoom-in}
+.lightbox{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.85);cursor:zoom-out}
+.lightbox[hidden]{display:none}
+.lightbox img{max-width:100%;max-height:100%;object-fit:contain;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.5)}
+html.lightbox-open{overflow:hidden}
 figcaption{font:400 14px/1.6 var(--sans);color:var(--muted);margin-top:6px}
 figure:has(figcaption){counter-increment:fig}
 html[lang="ko"] figcaption::before{content:"그림 " counter(fig) ". ";font-weight:700;color:var(--ink)}

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko" data-lang="ko">
+<html lang="en" data-lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,6 +19,8 @@ html[data-lang="ko"] [lang="en"].l, html[data-lang="en"] [lang="ko"].l{display:n
 .title .edition{font:400 13.5px var(--sans);color:var(--muted);margin:8px 0 0}
 td.get{white-space:nowrap}
 td.get a{font-weight:700}
+td.get.pending{color:var(--muted);font-family:var(--sans);font-size:13.5px}
+.review-note{margin:14px 0 6px;padding:10px 14px;border-left:3px solid var(--rule);font:400 14.5px/1.7 var(--sans)}
 .small{font:400 13.5px/1.7 var(--sans);color:var(--muted)}
 .hash{font-family:var(--mono);font-size:12.5px;word-break:break-all}
 </style>
@@ -28,13 +30,13 @@ td.get a{font-weight:700}
 <header class="bar">
   <div class="bar-in">
     <a class="brand" href="index.html">MOSAIC</a>
-    <span class="ver">v0.1.0</span>
+    <span class="ver">v0.2.0</span>
     <span class="spacer"></span>
     <a class="navlink" href="#downloads"><span class="l" lang="ko">다운로드</span><span class="l" lang="en">Downloads</span></a>
-    <a class="navlink" href="#guides"><span class="l" lang="ko">설명서</span><span class="l" lang="en">Guides</span></a>
+    <a class="navlink strong" href="#guides"><span class="l" lang="ko">설명서</span><span class="l" lang="en">Guides</span></a>
     <div class="langs" role="group" aria-label="Language">
-      <button type="button" id="lang-ko" data-set="ko" aria-pressed="true">한국어</button>
-      <button type="button" id="lang-en" data-set="en" aria-pressed="false">English</button>
+      <button type="button" id="lang-ko" data-set="ko" aria-pressed="false">한국어</button>
+      <button type="button" id="lang-en" data-set="en" aria-pressed="true">English</button>
     </div>
   </div>
 </header>
@@ -44,12 +46,12 @@ td.get a{font-weight:700}
 <div class="title">
   <h1>MOSAIC</h1>
   <p class="full"><b>M</b>ulti-ROI <b>O</b>ptical <b>S</b>ystem for <b>A</b>nalysis of <b>I</b>ntracellular <b>C</b>alcium</p>
-  <p class="edition l" lang="ko">버전 0.1.0 · 원본 앱 기준</p>
-  <p class="edition l" lang="en">Version 0.1.0 · original app</p>
+  <p class="edition l" lang="ko">버전 0.2.0 · Pacing interval 기본값 450 ms (논문 분석 설정)</p>
+  <p class="edition l" lang="en">Version 0.2.0 · Pacing interval default 450 ms (the manuscript setting)</p>
 </div>
 
-<p class="l" lang="ko">MOSAIC은 Nikon ND2 형식의 고속 형광 영상에서 심근세포의 Ca²⁺ 전이(transient)를 분석하는 데스크톱 프로그램입니다. 한 시야 안의 여러 세포 또는 세포 내 영역에 ROI를 설정하고, 박동마다 진폭, time to peak, 최대 상승 속도, 10·50·90% 감쇠 시간을 계산하여 Excel 파일로 저장합니다. Windows와 macOS에서 동작하며 Python 3.9 이상이 필요합니다.</p>
-<p class="l" lang="en">MOSAIC is a desktop program for analyzing cardiomyocyte Ca²⁺ transients in high-speed Nikon ND2 fluorescence recordings. ROIs are set on several cells or subcellular regions of one field of view, and for each beat the program calculates amplitude, time to peak, maximum rising rate, and 10/50/90% decay times, which are saved as Excel files. It runs on Windows and macOS and requires Python 3.9 or later.</p>
+<p class="l" lang="ko">MOSAIC은 Nikon ND2 형식의 고속 형광 영상에서 심근세포의 Ca²⁺ 전이(transient)를 분석하는 데스크톱 프로그램입니다. 한 시야 안의 여러 세포 또는 세포 내 영역에 ROI를 설정하고, 박동마다 진폭, time to peak, 최대 상승 속도, 10·50·90% 감쇠 시간을 계산하여 Excel 파일로 저장합니다. Windows와 macOS에서 동작하며 Python 3.10 이상이 필요합니다.</p>
+<p class="l" lang="en">MOSAIC is a desktop program for analyzing cardiomyocyte Ca²⁺ transients in high-speed Nikon ND2 fluorescence recordings. ROIs are set on several cells or subcellular regions of one field of view, and for each beat the program calculates amplitude, time to peak, maximum rising rate, and 10/50/90% decay times, which are saved as Excel files. It runs on Windows and macOS and requires Python 3.10 or later.</p>
 
 <figure>
   <a href="assets/img/09-transients.png"><img src="assets/img/09-transients.png" alt="MOSAIC main window analyzing the example recording" width="1600" height="1000"></a>
@@ -58,10 +60,15 @@ td.get a{font-weight:700}
 </figure>
 
 <!--
-  EDIT: download links. Replace "mosaicsnu" with the real GitHub account name if different.
-  - Program ZIP works after the MOSAIC repository is public and tag v0.1.0 exists.
-  - Example file: attach MOSAIC_example_2Hz.nd2 to release v0.1.0.
-  - Test recordings: replace "공개 예정 / Coming soon" with the Zenodo link when published.
+  EDIT: downloads are withheld until the manuscript is published; reviewers receive access separately.
+  On publication, replace each "td.get" pending cell with:
+  - Program ZIP: <a href="https://github.com/mosaicsnu/MOSAIC/archive/refs/tags/v0.2.0.zip">ZIP</a>
+    (works after the MOSAIC repository is public and tag v0.2.0 exists)
+  - Example file: <a href="https://github.com/mosaicsnu/MOSAIC/releases/download/v0.2.0/MOSAIC_example_2Hz.nd2">ND2</a>
+    (attach MOSAIC_example_2Hz.nd2 to release v0.2.0)
+  - Test recordings: the Zenodo record link
+  - Source code: <a href="https://github.com/mosaicsnu/MOSAIC">GitHub</a>
+  Then remove the ".review-note" paragraphs and restore the GitHub Issues link in section 5.
 -->
 <h2 id="downloads"><span class="secno">1</span><span class="l" lang="ko">다운로드</span><span class="l" lang="en">Downloads</span></h2>
 
@@ -73,30 +80,33 @@ td.get a{font-weight:700}
   <th><span class="l" lang="ko">받기</span><span class="l" lang="en">Get</span></th>
 </tr>
 <tr>
-  <td><b>MOSAIC v0.1.0</b></td>
+  <td><b>MOSAIC v0.2.0</b></td>
   <td><span class="l" lang="ko">프로그램 전체 (Windows·macOS 공용)</span><span class="l" lang="en">Complete program (Windows and macOS)</span></td>
   <td class="v">ZIP · &lt; 1 MB</td>
-  <td class="get"><a href="https://github.com/mosaicsnu/MOSAIC/archive/refs/tags/v0.1.0.zip">ZIP</a></td>
+  <td class="get pending"><span class="l" lang="ko">출판 시 공개</span><span class="l" lang="en">On publication</span></td>
 </tr>
 <tr>
   <td><b><span class="l" lang="ko">예제 파일</span><span class="l" lang="en">Example recording</span></b><br><code>MOSAIC_example_2Hz.nd2</code></td>
   <td><span class="l" lang="ko">설명서 3장에서 사용. 2 Hz 자극 심근세포, 288 × 240 px, 8-bit, 4,000 프레임(2.01 ms 간격, 8.04 s). 원본 기록에서 픽셀과 시간 정보를 그대로 잘라낸 파일.</span><span class="l" lang="en">Used in chapter 3 of the guide. Cardiomyocytes paced at 2 Hz, 288 × 240 px, 8-bit, 4,000 frames (2.01-ms interval, 8.04 s), cropped from an original recording with pixels and timestamps unchanged.</span></td>
   <td class="v">ND2 · 295 MB</td>
-  <td class="get"><a href="https://github.com/mosaicsnu/MOSAIC/releases/download/v0.1.0/MOSAIC_example_2Hz.nd2">ND2</a></td>
+  <td class="get pending"><span class="l" lang="ko">출판 시 공개</span><span class="l" lang="en">On publication</span></td>
 </tr>
 <tr>
   <td><b><span class="l" lang="ko">테스트 원본 기록</span><span class="l" lang="en">Full test recordings</span></b></td>
   <td><code>26831_020.nd2</code> 600 × 600 px, 12,406 frames, 24.9 s<br><code>26831_021.nd2</code> 600 × 600 px, 14,911 frames, 30.0 s<br><span class="l" lang="ko">연구 데이터 저장소(Zenodo)에서 제공</span><span class="l" lang="en">Provided through Zenodo</span></td>
   <td class="v">ND2 · 4.5 GB<br>ND2 · 5.4 GB</td>
-  <td class="get"><span class="l" lang="ko">공개 예정</span><span class="l" lang="en">Coming soon</span></td>
+  <td class="get pending"><span class="l" lang="ko">출판 시 공개</span><span class="l" lang="en">On publication</span></td>
 </tr>
 <tr>
   <td><b><span class="l" lang="ko">소스 코드</span><span class="l" lang="en">Source code</span></b></td>
   <td><span class="l" lang="ko">GitHub 저장소 (변경 기록, 문제 신고, Markdown 설명서)</span><span class="l" lang="en">GitHub repository (change history, issue tracker, Markdown guide)</span></td>
   <td class="v">GitHub</td>
-  <td class="get"><a href="https://github.com/mosaicsnu/MOSAIC">GitHub</a></td>
+  <td class="get pending"><span class="l" lang="ko">출판 시 공개</span><span class="l" lang="en">On publication</span></td>
 </tr>
 </table></div>
+
+<p class="review-note l" lang="ko">MOSAIC을 소개하는 논문이 심사 중입니다. 프로그램, 예제 파일, 테스트 원본 기록, 소스 코드는 <b>논문 출판 시 공개</b>합니다. 심사위원에게는 투고 과정에서 별도로 제공합니다.</p>
+<p class="review-note l" lang="en">The manuscript describing MOSAIC is under peer review. The program, example recording, full test recordings, and source code will be <b>released upon publication</b>. Reviewers are given access separately through the submission process.</p>
 
 <p class="small l" lang="ko">예제 파일 SHA-256: <span class="hash">A4CAC69244BA08A0A18D28AEAED23718C738D7DE0C14D34C3A195A56B87E6433</span><br>
 확인 방법 · Windows: <code>certutil -hashfile MOSAIC_example_2Hz.nd2 SHA256</code> · macOS: <code>shasum -a 256 MOSAIC_example_2Hz.nd2</code><br>
@@ -116,13 +126,13 @@ If a large download stops, resume it with <code>curl -L -C - -O &lt;file URL&gt;
 
 <h2 id="install"><span class="secno">3</span><span class="l" lang="ko">설치 요약</span><span class="l" lang="en">Installation in brief</span></h2>
 <ol class="l" lang="ko">
-  <li><a href="https://www.python.org/downloads/">python.org</a>에서 Python 3.9 이상을 설치합니다. Windows에서는 <b>Add python.exe to PATH</b>를 선택합니다.</li>
+  <li><a href="https://www.python.org/downloads/">python.org</a>에서 Python 3.10 이상을 설치합니다. Windows에서는 <b>Add python.exe to PATH</b>를 선택합니다.</li>
   <li>MOSAIC ZIP 파일을 로컬 폴더(예: <code>C:\MOSAIC</code>)에 압축 해제합니다. Dropbox, OneDrive 등 동기화 폴더는 사용하지 않습니다.</li>
   <li><code>run_app.bat</code>(Windows) 또는 <code>run_app.command</code>(macOS)를 실행합니다. 첫 실행 시 필요한 패키지가 설치되며 수 분이 걸립니다.</li>
   <li>설명서 <a href="guide-ko.html#tutorial">3장 예제로 따라하기</a>에 따라 예제 파일을 분석합니다.</li>
 </ol>
 <ol class="l" lang="en">
-  <li>Install Python 3.9 or later from <a href="https://www.python.org/downloads/">python.org</a>. On Windows, select <b>Add python.exe to PATH</b>.</li>
+  <li>Install Python 3.10 or later from <a href="https://www.python.org/downloads/">python.org</a>. On Windows, select <b>Add python.exe to PATH</b>.</li>
   <li>Extract the MOSAIC ZIP to a local folder such as <code>C:\MOSAIC</code>. Do not use synced folders such as Dropbox or OneDrive.</li>
   <li>Run <code>run_app.bat</code> (Windows) or <code>run_app.command</code> (macOS). The first launch installs the required packages and takes several minutes.</li>
   <li>Analyze the example file following <a href="guide-en.html#tutorial">chapter 3, Example walkthrough</a>.</li>
@@ -130,20 +140,15 @@ If a large download stops, resume it with <code>curl -L -C - -O &lt;file URL&gt;
 
 <h2 id="notice"><span class="secno">4</span><span class="l" lang="ko">사용 전 유의사항</span><span class="l" lang="en">Before use</span></h2>
 <div class="warn">
-  <p class="l" lang="ko">원본 v0.1.0의 <b>Pacing interval 기본값은 500 ms</b>입니다. 설명서의 2 Hz 예제는 기존 앱에서 450 ms를 수동 입력한 결과를 보여 줍니다. 앱 기본값이 이미 변경되었다는 뜻은 아닙니다. 분석 시 실제 파형과 검출 이벤트를 확인하십시오. 자세한 내용은 설명서 <a href="guide-ko.html#limits">7장 알려진 제약</a>을 참조하십시오.</p>
-  <p class="l" lang="en">The original v0.1.0 has a <b>default Pacing interval of 500 ms</b>. The 2 Hz example in the guide uses a manually entered value of 450 ms in the unchanged app. This does not mean the app default has been changed. Inspect waveforms and detected events for each analysis. See <a href="guide-en.html#limits">chapter 7, Known limitations</a>.</p>
+  <p class="l" lang="ko"><b>Pacing interval</b> 기본값은 2 Hz 자극용 450 ms입니다. 다른 자극 빈도에서는 설명서 <a href="guide-ko.html#settings">5장 설정값 고르는 법</a>에 따라 바꾸십시오. 분석마다 사용한 설정과 MOSAIC 버전을 기록하고, 검출된 박동 수(Tran N)가 실제 박동 수와 맞는지 확인하십시오. 자세한 내용은 <a href="guide-ko.html#limits">7장 알려진 제약</a>을 참조하십시오.</p>
+  <p class="l" lang="en">The <b>Pacing interval</b> defaults to 450 ms for 2-Hz pacing. For other pacing rates, change it as described in <a href="guide-en.html#settings">chapter 5, Choosing settings</a>. Record the settings and MOSAIC version for each analysis, and check that the number of detected beats (Tran N) matches the actual beats. See <a href="guide-en.html#limits">chapter 7, Known limitations</a>.</p>
 </div>
 
 <h2 id="cite"><span class="secno">5</span><span class="l" lang="ko">인용 및 문의</span><span class="l" lang="en">Citation and contact</span></h2>
-<p class="l" lang="ko">연구에 MOSAIC을 사용한 경우 함께 발표되는 논문을 인용하여 주십시오. 인용 정보와 라이선스는 출판 후 게시합니다. 오류 보고와 문의는 <a href="https://github.com/mosaicsnu/MOSAIC/issues">GitHub Issues</a>를 이용하십시오.</p>
-<p class="l" lang="en">If MOSAIC is used in research, please cite the accompanying manuscript. Citation details and the license will be posted upon publication. Please report problems or send questions through <a href="https://github.com/mosaicsnu/MOSAIC/issues">GitHub Issues</a>.</p>
+<p class="l" lang="ko">연구에 MOSAIC을 사용한 경우 함께 발표되는 논문을 인용하여 주십시오. 인용 정보, 라이선스, 문의 창구(GitHub Issues)는 논문 출판 시 함께 게시합니다.</p>
+<p class="l" lang="en">If MOSAIC is used in research, please cite the accompanying manuscript. Citation details, the license, and the contact channel (GitHub Issues) will be posted upon publication.</p>
 
-<section id="patch-note" class="note">
-<h2><span class="l" lang="ko">0.1.1 note (미반영)</span><span class="l" lang="en">0.1.1 note (not applied)</span></h2>
-<p class="l" lang="ko">수정 제안: <b>Pacing interval 기본값 500 ms → 450 ms</b>. 현재 앱은 원본 v0.1.0이며 이 변경은 미반영입니다. 향후 0.1.1 패치에서 기본값만 조정하며, 검출 알고리즘과 나머지 기능은 변경하지 않습니다.</p>
-<p class="l" lang="en">Proposed change: <b>default Pacing interval 500 ms → 450 ms</b>. The app remains the original v0.1.0; this change has not been applied. A future 0.1.1 patch would change only the default, leaving the detection algorithm and other functionality unchanged.</p>
-</section>
-<footer>MOSAIC v0.1.0</footer>
+<footer>MOSAIC v0.2.0</footer>
 </main>
 
 <script>
@@ -158,12 +163,11 @@ If a large download stops, resume it with <code>curl -L -C - -O &lt;file URL&gt;
   }
   var initial = new URLSearchParams(location.search).get("lang");
   if (initial !== "ko" && initial !== "en") { try { initial = localStorage.getItem("mosaic-lang"); } catch (e) {} }
-  if (initial !== "ko" && initial !== "en") {
-    initial = (navigator.language || "").toLowerCase().indexOf("ko") === 0 ? "ko" : "en";
-  }
+  if (initial !== "ko" && initial !== "en") initial = "en";
   setLang(initial);
   buttons.forEach(function (b) { b.addEventListener("click", function () { setLang(b.dataset.set); }); });
 })();
 </script>
+<script src="assets/lightbox.js"></script>
 </body>
 </html>
