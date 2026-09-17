@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOSAIC 사용 설명서</title>
+<meta name="description" content="MOSAIC v0.1.0 한국어 사용 설명서: 설치부터 예제 따라하기, 모든 버튼과 설정값 설명까지.">
+<link rel="alternate" hreflang="en" href="guide-en.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@400;700&family=Noto+Serif+KR:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="index.html">MOSAIC<small>사용 설명서</small></a>
+    <span class="ver">v0.1.0</span>
+    <span class="spacer"></span>
+    <a class="navlink" href="index.html#downloads">다운로드</a>
+    <nav class="langs" aria-label="언어">
+      <a href="guide-ko.html" aria-current="true" lang="ko">한국어</a>
+      <a href="guide-en.html" class="lang-switch" lang="en">English</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+<nav class="toc" aria-label="목차">
+  <p>목차</p>
+  <ol>
+    <li><a href="#start">시작하기 전에</a></li>
+    <li><a href="#install">1. 설치와 실행</a></li>
+    <li><a href="#first-look">2. 처음 보는 화면</a></li>
+    <li><a href="#tutorial">3. 예제로 따라하기</a>
+      <ol>
+        <li><a href="#t1">3.1 파일 열기</a></li>
+        <li><a href="#t2">3.2 배경 ROI</a></li>
+        <li><a href="#t3">3.3 세포 ROI</a></li>
+        <li><a href="#t4">3.4 신호 계산</a></li>
+        <li><a href="#t5">3.5 분석 구간</a></li>
+        <li><a href="#t6">3.6 Pacing interval</a></li>
+        <li><a href="#t7">3.7 광퇴색 보정</a></li>
+        <li><a href="#t8">3.8 전이 계산</a></li>
+        <li><a href="#t9">3.9 이벤트 검토</a></li>
+        <li><a href="#t10">3.10 ROI 저장</a></li>
+        <li><a href="#t11">3.11 결과 내보내기</a></li>
+        <li><a href="#t12">3.12 다시 불러오기</a></li>
+      </ol>
+    </li>
+    <li><a href="#reference">4. 버튼 사전</a>
+      <ol>
+        <li><a href="#ref-controls">4.1 Controls 패널</a></li>
+        <li><a href="#ref-graph">4.2 Graph analysis 패널</a></li>
+        <li><a href="#ref-analysis">4.3 Transient analysis 패널</a></li>
+      </ol>
+    </li>
+    <li><a href="#settings">5. 설정값 고르는 법</a></li>
+    <li><a href="#outputs">6. 결과 파일 읽는 법</a></li>
+    <li><a href="#limits">7. 알려진 제약</a></li>
+    <li><a href="#trouble">8. 문제 해결</a></li>
+    <li><a href="#glossary">9. 용어 풀이</a></li>
+  </ol>
+</nav>
+
+<main>
+<div class="prose">
+
+<h1 id="start">MOSAIC 사용 설명서</h1>
+<p class="lede">MOSAIC 버전 0.1.0의 설치 방법, 예제 파일을 이용한 분석 절차, 각 버튼과 설정값을 설명합니다.</p>
+
+<p><b>MOSAIC</b>(Multi-ROI Optical System for Analysis of Intracellular Calcium)은 Nikon ND2 고속 형광 영상에서 심근세포의 Ca²⁺ 전이(transient)를 분석하는 프로그램입니다. 한 시야 안의 여러 세포나 세포 일부에 ROI를 놓고, 박동마다의 칼슘 신호를 검출해 진폭, time to peak, 최대 상승 속도, 감쇠 시간을 계산합니다.</p>
+
+<div class="note">
+  <span class="tag">이 설명서의 구성</span>
+  <ul>
+    <li>처음이라면 <a href="#install">1. 설치</a> → <a href="#tutorial">3. 예제로 따라하기</a>를 순서대로 해 보세요. 약 20분 걸립니다.</li>
+    <li>특정 버튼이 궁금하면 <a href="#reference">4. 버튼 사전</a>에서 번호로 찾으세요.</li>
+    <li>자신의 데이터를 분석하기 전에는 <a href="#settings">5. 설정값 고르는 법</a>과 <a href="#limits">7. 알려진 제약</a>을 꼭 읽으세요.</li>
+  </ul>
+</div>
+
+<h3>준비물</h3>
+<ul class="check">
+  <li>Windows 10/11 또는 macOS 컴퓨터. RAM은 분석할 ND2 파일 크기의 2배 이상을 권장합니다(예제 파일은 0.3 GB라 대부분의 컴퓨터에서 됩니다).</li>
+  <li>인터넷 연결. 첫 실행 때 필요한 부품을 자동으로 내려받습니다.</li>
+  <li><a href="index.html#downloads">홈페이지</a>에서 받은 MOSAIC 프로그램(ZIP)과 예제 파일 <code>MOSAIC_example_2Hz.nd2</code></li>
+  <li>로컬 디스크의 작업 폴더. <b>Dropbox, OneDrive, iCloud, Google Drive 폴더는 피하세요.</b></li>
+</ul>
+
+<!-- ============ 1. INSTALL ============ -->
+<h2 id="install"><span class="secno">1</span>설치와 실행</h2>
+<p>설치는 컴퓨터마다 한 번만 하면 됩니다. 이후에는 파일 하나를 더블클릭해서 실행합니다.</p>
+
+<h3 id="python"><span class="secno">1.1</span>Python 설치</h3>
+<p>MOSAIC은 Python으로 만들어져 있어 Python 3.9 이상이 필요합니다. 이미 설치되어 있다면 건너뛰세요.</p>
+<ol>
+  <li><a href="https://www.python.org/downloads/">python.org/downloads</a>에서 <b>Download Python</b> 버튼을 눌러 설치 파일을 받습니다.</li>
+  <li>설치 파일을 실행합니다.</li>
+  <li><b>Windows</b>: 첫 화면 아래쪽의 <b>Add python.exe to PATH</b>를 반드시 체크한 뒤 <b>Install Now</b>를 누릅니다.</li>
+  <li><b>macOS</b>: 안내에 따라 설치를 끝냅니다.</li>
+</ol>
+<div class="warn"><span class="tag">자주 하는 실수</span><p>Windows에서 <b>Add python.exe to PATH</b>를 체크하지 않으면 MOSAIC이 Python을 찾지 못합니다. 이 경우 Python 설치 파일을 다시 실행해 <b>Modify</b>로 옵션을 켜거나, 삭제 후 다시 설치하세요.</p></div>
+
+<h3 id="download"><span class="secno">1.2</span>MOSAIC 받기</h3>
+<ol>
+  <li><a href="index.html#downloads">홈페이지 다운로드</a>에서 <b>MOSAIC v0.1.0 (ZIP)</b>을 받습니다.</li>
+  <li>ZIP 파일을 오른쪽 클릭 → <b>압축 풀기</b>로 로컬 폴더에 풉니다. 예: <code>C:\MOSAIC</code></li>
+  <li>같은 페이지에서 예제 파일 <code>MOSAIC_example_2Hz.nd2</code>를 받아 알기 쉬운 곳(예: <code>C:\MOSAIC-data</code>)에 둡니다.</li>
+</ol>
+<div class="note"><span class="tag">동기화 폴더를 피해야 하는 이유</span><p>첫 실행 때 수백 MB의 부품을 설치하는데, 동기화 프로그램이 그 파일들을 동시에 올리려고 잠그면 설치가 <code>WinError 32</code> 오류로 중단됩니다. 또 결과 폴더(<code>_ana</code>)가 ND2 파일 옆에 만들어지므로 ND2 파일도 쓰기 가능한 로컬 위치에 두는 것이 좋습니다.</p></div>
+
+<h3 id="run"><span class="secno">1.3</span>실행</h3>
+<div class="tw"><table>
+<tr><th>운영체제</th><th>실행 방법</th></tr>
+<tr><td>Windows</td><td>MOSAIC 폴더의 <code>run_app.bat</code>을 더블클릭합니다. "Windows의 PC 보호" 창이 뜨면 <b>추가 정보 → 실행</b>을 누릅니다.</td></tr>
+<tr><td>macOS</td><td><code>run_app.command</code>를 더블클릭합니다. 차단되면 오른쪽 클릭 → <b>열기</b>. 그래도 안 되면 터미널에서 <code>chmod +x run_app.command</code>를 한 번 실행합니다.</td></tr>
+</table></div>
+<p><b>첫 실행</b>은 검은 창에 <code>Creating Python virtual environment...</code>, <code>Installing Python packages...</code>가 표시되며 몇 분 걸립니다. 끝나면 MOSAIC 창이 열립니다. 두 번째부터는 몇 초 안에 열립니다.</p>
+<figure>
+  <a href="assets/img/01-start.png"><img src="assets/img/01-start.png" alt="처음 실행한 MOSAIC 창. 파일이 열리지 않아 대부분의 버튼이 비활성 상태" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>처음 연 MOSAIC. 아직 파일이 없어서 <span class="btn">Open ND2</span>와 <span class="btn">Load Info</span> 외의 버튼은 회색(비활성)입니다. 정상입니다.</figcaption>
+</figure>
+<details>
+  <summary>터미널로 실행하는 방법 (선택)</summary>
+<pre><code>python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+python -m pip install -e .
+PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
+</details>
+
+<!-- ============ 2. FIRST LOOK ============ -->
+<h2 id="first-look"><span class="secno">2</span>처음 보는 화면</h2>
+<p>MOSAIC 창은 네 영역으로 나뉩니다. 각 영역의 가장자리를 끌어 크기를 바꾸거나, 제목 줄을 끌어 위치를 옮길 수 있습니다.</p>
+<figure>
+  <a href="assets/img/00-layout.png"><img src="assets/img/00-layout.png" alt="MOSAIC 창의 네 영역 A Controls, B Image, C Transient analysis, D Graph analysis" loading="lazy" width="1628" height="1028"></a>
+  <figcaption>예제 파일을 연 직후의 화면과 네 영역</figcaption>
+</figure>
+<div class="tw"><table>
+<tr><th class="n"></th><th>영역</th><th>하는 일</th><th>자세히</th></tr>
+<tr><td class="n"><span class="num">A</span></td><td><b>Controls</b></td><td>파일 열기·저장, 재생, 배경 ROI, 세포 ROI, 광퇴색 보정, 상태 메시지(Status)</td><td><a href="#ref-controls">Controls 패널</a></td></tr>
+<tr><td class="n"><span class="num">B</span></td><td><b>Image</b></td><td>현재 프레임 영상. ROI를 여기에 놓고 끌어서 옮깁니다. 마우스 휠로 확대/축소.</td><td><a href="#t3">세포 ROI</a></td></tr>
+<tr><td class="n"><span class="num">C</span></td><td><b>Transient analysis</b></td><td>전이 검출 설정, 평균 전이 그래프, 이벤트 표, 저장된 ROI 표</td><td><a href="#ref-analysis">Transient analysis 패널</a></td></tr>
+<tr><td class="n"><span class="num">D</span></td><td><b>Graph analysis</b></td><td>위: 전체 기록과 분석 구간(주황색 띠) · 아래: 확대해서 보는 상세 그래프</td><td><a href="#ref-graph">Graph analysis 패널</a></td></tr>
+</table></div>
+<div class="note"><span class="tag">참고</span><p>Controls 맨 아래의 <b>Status</b> 칸은 방금 누른 버튼의 결과를 문장으로 알려 줍니다. 무언가 이상하면 먼저 Status를 읽으세요. 이 설명서의 "확인할 것"도 대부분 Status 문구를 기준으로 합니다.</p></div>
+
+<!-- ============ 3. TUTORIAL ============ -->
+<h2 id="tutorial"><span class="secno">3</span>예제로 따라하기</h2>
+<p>예제 파일 <code>MOSAIC_example_2Hz.nd2</code>로 세포 한 개를 처음부터 끝까지 분석합니다.</p>
+<div class="tw"><table>
+<tr><th>예제 파일 정보</th><th></th></tr>
+<tr><td>내용</td><td>2 Hz 전기 자극 중인 성체 심근세포의 형광 칼슘 영상(원본 기록의 일부를 잘라낸 것)</td></tr>
+<tr><td>크기</td><td class="v">288 × 240 px · 8-bit · 4,000 frames</td></tr>
+<tr><td>촬영 간격 / 길이</td><td class="v">2.01 ms (≈ 500 frames/s) · 8.04 s</td></tr>
+<tr><td>파일 크기</td><td class="v">295 MB</td></tr>
+</table></div>
+
+<section class="step" id="t1"><div>
+<h3><span class="secno">3.1</span>ND2 파일 열기</h3>
+<ol>
+  <li>Controls의 <span class="btn">Open ND2</span>를 누릅니다.</li>
+  <li><code>MOSAIC_example_2Hz.nd2</code>를 선택하고 <b>열기</b>를 누릅니다.</li>
+</ol>
+<figure>
+  <a href="assets/img/02-open.png"><img src="assets/img/02-open.png" alt="예제 파일을 연 화면" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>가운데에 첫 프레임이 표시되고 버튼들이 활성화됩니다. 영상은 원래 어두운 편입니다(8-bit, 0–255 고정 표시).</figcaption>
+</figure>
+<div class="ok"><span class="tag">확인</span>
+<ul>
+  <li>Status: <code>Loaded ND2 | dtype=uint8 | sizes={'T': 4000, 'Y': 240, 'X': 288} …</code></li>
+  <li>Playback: <code>Frame: 1 / 4000 | Time: 0.000000 s</code></li>
+  <li>아래 그래프의 시간축이 0–8 s입니다.</li>
+</ul></div>
+<p><b>팁</b>: <span class="btn">Play</span>를 누르면 실제 속도로 재생됩니다. 가운데 가로로 누운 세포가 박동마다 밝아지는 것을 볼 수 있습니다. 다시 누르면 멈춥니다.</p>
+</div></section>
+
+<section class="step" id="t2"><div>
+<h3><span class="secno">3.2</span>배경 ROI 놓기</h3>
+<p>카메라 잡음과 배경 밝기를 빼기 위해, 세포가 없는 곳에 배경 ROI를 둡니다.</p>
+<ol>
+  <li><span class="btn">Add Background</span>를 누릅니다. 영상 가운데에 <span class="sw bgroi"></span>파란 원이 나타납니다.</li>
+  <li>파란 원 안쪽을 끌어 <b>오른쪽 아래의 어두운 빈 곳</b>으로 옮깁니다.</li>
+  <li>원 테두리의 작은 손잡이를 끌어 세포에 닿지 않을 만큼 크기를 줄입니다.</li>
+</ol>
+<figure>
+  <a href="assets/img/03-background.png"><img src="assets/img/03-background.png" alt="오른쪽 아래 빈 공간에 놓은 파란 배경 ROI" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>오른쪽 아래의 세포 없는 곳에 둔 배경 ROI(파란 원)</figcaption>
+</figure>
+<p><b>대안</b>: <span class="btn">Recommend Background</span>를 누르면 처음 10 s 동안 가장 어두운 곳을 자동으로 찾아 줍니다. 무작위로 찾기 때문에 누를 때마다 위치가 다를 수 있으니, 결과 위치에 세포가 없는지 눈으로 확인하세요.</p>
+</div></section>
+
+<section class="step" id="t3"><div>
+<h3><span class="secno">3.3</span>세포 위에 ROI 놓기</h3>
+<ol>
+  <li>ROI 영역의 <b>Shape</b>를 <span class="fld">Rectangle</span>로 바꿉니다. 막대 모양 세포에는 사각형이 잘 맞습니다.</li>
+  <li><span class="btn">Add ROI</span>를 누릅니다. 노란 사각형이 가운데에 생깁니다.</li>
+  <li>사각형 안쪽을 끌어 가로로 누운 세포 위로 옮깁니다.</li>
+  <li>오른쪽 아래 <b>◇ 손잡이</b>로 크기를, 오른쪽 가운데 <b>○ 손잡이</b>로 회전을 조절해 세포 윤곽 안쪽에 맞춥니다.</li>
+</ol>
+<figure>
+  <a href="assets/img/04-roi.png"><img src="assets/img/04-roi.png" alt="가로로 누운 세포 위에 놓은 노란 사각형 ROI" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>세포 윤곽 안쪽에 맞춘 사각형 ROI(노란색)</figcaption>
+</figure>
+<div class="note"><span class="tag">ROI 배치 기준</span>
+<ul>
+  <li>세포 경계보다 약간 안쪽. 경계를 넘으면 배경이 섞여 진폭이 작아집니다.</li>
+  <li>이웃 세포와 겹치지 않게.</li>
+  <li>세포 일부(예: 한쪽 끝)만 분석하고 싶으면 그 부분에만 작게 놓아도 됩니다.</li>
+</ul></div>
+<p><b>선택 기능 <span class="btn">(op) Auto ROI</span></b>: 방금 놓은 ROI 안에서 처음 3 s 동안 밝기 변화가 큰 픽셀만 골라 다각형 ROI로 바꿉니다. 마음에 들지 않으면 같은 버튼(<span class="btn">(op) Undo Auto ROI</span>)을 다시 눌러 되돌립니다.</p>
+</div></section>
+
+<section class="step" id="t4"><div>
+<h3><span class="secno">3.4</span>신호 계산하기</h3>
+<ol><li><span class="btn">Calculate</span>를 누릅니다.</li></ol>
+<figure>
+  <a href="assets/img/05-calculate.png"><img src="assets/img/05-calculate.png" alt="Calculate 후 아래 그래프에 박동하는 흰색 신호가 나타난 화면" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>Graph analysis에 ROI의 밝기 신호(흰색)가 그려집니다. 약 0.5 s마다 솟는 봉우리가 박동 한 번씩입니다.</figcaption>
+</figure>
+<div class="ok"><span class="tag">확인</span>
+<ul>
+  <li>위 그래프에 규칙적인 봉우리가 약 16개 보입니다(8 s × 2 Hz).</li>
+  <li>Status에 <code>Background: set</code>, <code>Graph: background-corrected intensity</code>가 포함됩니다.</li>
+</ul></div>
+<p>처음 누를 때는 영상 전체를 메모리에 올리느라 잠시 멈춘 것처럼 보일 수 있습니다. ROI를 옮기거나 크기를 바꾼 뒤에는 <b>반드시 다시 <span class="btn">Calculate</span></b>를 눌러야 신호가 갱신됩니다.</p>
+</div></section>
+
+<section class="step" id="t5"><div>
+<h3><span class="secno">3.5</span>분석 구간(Tran.) 정하기</h3>
+<p>위 그래프의 <span class="sw tran"></span><b>주황색 띠</b>가 전이를 검출할 시간 구간입니다. 처음에는 기록의 앞 25%로 잡혀 있습니다.</p>
+<ol>
+  <li>주황색 띠의 오른쪽 가장자리를 끌어 거의 끝까지 넓힙니다. 또는 왼쪽 <b>Ranges</b>의 <b>Tran.</b> 칸에 <span class="fld">Start 0.2</span>, <span class="fld">End 7.8</span>을 입력합니다.</li>
+  <li>아래 상세 그래프에서 마우스 휠로 확대해 봉우리 모양을 살펴봅니다. 정확한 범위는 <b>Detail view</b>의 X 칸(예: 1 – 3 s)으로 지정할 수 있습니다.</li>
+</ol>
+<figure>
+  <a href="assets/img/06-range.png"><img src="assets/img/06-range.png" alt="주황색 분석 구간을 0.2–7.8 s로 넓히고 아래 그래프를 1–3 s로 확대한 화면" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>분석 구간 0.2–7.8 s(위), 1–3 s 확대(아래)</figcaption>
+</figure>
+<div class="note"><span class="tag">구간 선택 기준</span>
+<ul>
+  <li>자극이 안정적인 구간만 포함하세요. 자극 시작 직후의 불안정한 박동이나 움직임·잡음이 있는 부분은 빼는 것이 좋습니다.</li>
+  <li>구간이 끝나기 전 <b>Pacing interval</b>만큼의 여유가 있어야 마지막 박동이 분석됩니다.</li>
+</ul></div>
+</div></section>
+
+<section class="step" id="t6"><div>
+<h3><span class="secno">3.6</span>Pacing interval 먼저 맞추기</h3>
+<p>v0.1.0의 기본값은 <b>500 ms</b>입니다. 이 예제를 따라할 때만 오른쪽 Transient analysis의 <b>Pacing interval</b>을 <span class="fld">450 ms</span>로 바꿉니다(칸을 누르고 450 입력 후 <kbd>Enter</kbd>).</p>
+<div class="warn"><span class="tag">500 ms가 아닌 450 ms를 입력하는 이유</span>
+<p>이 예제의 비교에서는 Pacing interval 500 ms에서 7개, 450 ms에서 14개가 검출되었습니다. 따라서 예제는 기존 v0.1.0에서 450 ms를 수동 입력하여 진행합니다. 이는 앱 수정이나 모든 자극 주파수에 적용되는 고정 규칙을 뜻하지 않습니다. 자세한 내용은 <a href="#limits">7. 알려진 제약</a>에 있습니다.</p>
+<p>광퇴색 보정도 이 값을 써서 박동 위치를 찾으므로, <b>광퇴색 보정보다 먼저</b> 맞춰야 합니다.</p></div>
+</div></section>
+
+<section class="step" id="t7"><div>
+<h3><span class="secno">3.7</span>광퇴색 보정 (선택)</h3>
+<p>빛을 계속 받으면 형광이 서서히 약해져 기저선이 조금씩 내려갑니다. 기저선이 기울어 보이면 보정합니다.</p>
+<ol>
+  <li>Controls의 <span class="btn">Cal. Photobleaching</span>을 누릅니다.</li>
+  <li>그래프에서 <span class="sw corr"></span><b>노란 점선</b>(맞춘 기저선)과 <span class="sw base"></span><b>빨간 점</b>(기저선으로 쓴 구간)을 확인합니다.</li>
+  <li>빨간 점이 봉우리가 아닌 <b>평평한 바닥에만</b> 있으면 <span class="btn">Confirm Photobleaching</span>을 누릅니다.</li>
+</ol>
+<div class="fig-split">
+<figure>
+  <a href="assets/img/07-photobleaching-preview.png"><img src="assets/img/07-photobleaching-preview.png" alt="광퇴색 보정 미리보기. 노란 점선 기저선과 빨간 기저선 점" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>미리보기: 아직 신호는 바뀌지 않았습니다.</figcaption>
+</figure>
+<figure>
+  <a href="assets/img/08-photobleaching-confirmed.png"><img src="assets/img/08-photobleaching-confirmed.png" alt="광퇴색 보정 적용 후 노란색으로 바뀐 신호" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>적용 후: 신호가 노란색으로 바뀝니다.</figcaption>
+</figure>
+</div>
+<div class="ok"><span class="tag">확인</span>
+<ul>
+  <li>미리보기 Status: <code>Photobleaching preview calculated (ratio=1). Press Confirm Photobleaching to apply.</code></li>
+  <li>적용 후 Status: <code>Photobleaching correction confirmed and applied.</code></li>
+</ul></div>
+<p>빨간 점이 봉우리 위에도 찍혀 있다면 박동이 검출되지 않은 것입니다. <b>Pacing interval</b>과 <b>Peak cutoff</b>를 확인하고 다시 <span class="btn">Cal. Photobleaching</span>을 누르세요. 되돌리려면 <span class="btn">Reset Photobleaching</span>.</p>
+</div></section>
+
+<section class="step" id="t8"><div>
+<h3><span class="secno">3.8</span>전이 계산하기</h3>
+<ol><li>Transient analysis 맨 위의 <span class="btn">Calculate transients</span>를 누릅니다.</li></ol>
+<figure>
+  <a href="assets/img/09-transients.png"><img src="assets/img/09-transients.png" alt="평균 전이 그래프와 이벤트 표가 채워진 화면" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>오른쪽 위에 평균 전이(굵은 흰 선)와 개별 박동(가는 선), 그 아래 이벤트 표가 나타납니다.</figcaption>
+</figure>
+<div class="ok"><span class="tag">확인</span>
+<ul>
+  <li>Status: <code>One average transient calculated from 14/14 selected events across 1 ROI trace(s). Pacing interval = 450 ms.</code></li>
+  <li>검출 수(14)가 분석 구간 7.6 s 동안의 박동 수(약 15)와 비슷해야 합니다.</li>
+  <li>평균 그래프: 0 ms에서 급하게 오르고 약 30 ms에 정점, 이후 천천히 내려옵니다.</li>
+</ul></div>
+</div></section>
+
+<section class="step" id="t9"><div>
+<h3><span class="secno">3.9</span>이벤트 검토하기</h3>
+<p>이벤트 표의 한 줄이 박동 한 번입니다. 표를 오른쪽으로 스크롤하면 감쇠 시간 열이 이어집니다.</p>
+<ul>
+  <li><b>Use</b> 체크를 풀면 그 박동이 평균과 요약에서 빠지고, 평균 그래프가 즉시 다시 그려집니다.</li>
+  <li>빼는 것이 좋은 경우: 봉우리가 두 개 겹친 박동, 움직임 때문에 튄 신호, 모양이 뚜렷하게 다른 박동.</li>
+  <li>이벤트의 시간(<b>Ab_start</b>)을 보고 상세 그래프에서 해당 박동을 확대해 확인할 수 있습니다.</li>
+</ul>
+<p>각 열의 뜻은 <a href="#ref-analysis">버튼 사전 – 이벤트 표</a>를 참고하세요.</p>
+</div></section>
+
+<section class="step" id="t10"><div>
+<h3><span class="secno">3.10</span>ROI 저장하기</h3>
+<ol><li>Controls의 <span class="btn">Save ROI</span>를 누릅니다.</li></ol>
+<figure>
+  <a href="assets/img/10-save-roi.png"><img src="assets/img/10-save-roi.png" alt="Save ROI 후 Saved ROI 표에 ROI 1 요약이 추가된 화면" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>ROI가 흰색으로 잠기고 번호가 붙으며, 오른쪽 아래 <b>Saved ROI</b> 표에 요약이 한 줄 추가됩니다.</figcaption>
+</figure>
+<div class="ok"><span class="tag">확인: 예제의 기대값 (v0.1.0)</span>
+<p>아래 값은 원본 v0.1.0에서 Pacing interval을 450 ms로 수동 설정하고 광퇴색 보정을 적용한 예제 결과입니다. 기본값 500 ms의 결과가 아니며, ROI 위치에 따라 달라질 수 있습니다.</p>
+<div class="tw"><table>
+<tr><th>Tran N</th><th>Tran Amp dF/F0</th><th>Tran Peak ms</th><th>Tran Max d(F/F0)/dt</th><th>Decay 10% ms</th><th>Decay 50% ms</th><th>Decay 90% ms</th></tr>
+<tr><td class="v">14</td><td class="v">≈ 1.47</td><td class="v">≈ 28.6</td><td class="v">≈ 74</td><td class="v">≈ 23.6</td><td class="v">≈ 61.5</td><td class="v">≈ 133.5</td></tr>
+</table></div></div>
+<p>저장 후 작업 공간은 비워집니다. <b>다른 세포도 분석하려면 3단계(Add ROI)부터 반복</b>하세요. 배경 ROI와 분석 구간은 그대로 유지됩니다.</p>
+</div></section>
+
+<section class="step" id="t11"><div>
+<h3><span class="secno">3.11</span>결과 내보내기</h3>
+<ol><li>Controls의 <span class="btn">Save</span>를 누릅니다.</li></ol>
+<p>ND2 파일과 같은 폴더에 <code>MOSAIC_example_2Hz_ana</code> 폴더가 만들어지고 다섯 개 파일이 저장됩니다. 파일 내용은 <a href="#outputs">6. 결과 파일 읽는 법</a>에 있습니다.</p>
+<figure style="max-width:420px">
+  <a href="assets/img/11-roi-output.jpg"><img src="assets/img/11-roi-output.jpg" alt="ROI.jpg: 첫 프레임 위에 저장된 ROI 1이 흰 사각형으로 표시된 이미지" loading="lazy" width="288" height="240"></a>
+  <figcaption><code>ROI.jpg</code>: 어떤 세포를 분석했는지 기록으로 남습니다.</figcaption>
+</figure>
+<div class="ok"><span class="tag">확인</span><p>Status: <code>Saved 1 checked ROI(s) to …\MOSAIC_example_2Hz_ana.</code></p></div>
+<p>Saved ROI 표에서 <b>Use</b> 체크를 푼 ROI는 내보내지 않습니다. 같은 파일로 다시 <span class="btn">Save</span>하면 기존 결과 파일을 덮어씁니다.</p>
+</div></section>
+
+<section class="step" id="t12"><div>
+<h3><span class="secno">3.12</span>분석 다시 불러오기</h3>
+<ol>
+  <li>다음에 MOSAIC을 켜서 <span class="btn">Load Info</span>를 누릅니다.</li>
+  <li><code>MOSAIC_example_2Hz_ana\analysis_info.json</code>을 선택합니다.</li>
+  <li>ND2 파일이 다시 열리고 저장된 ROI와 배경 ROI가 복원됩니다. Saved ROI 표의 줄을 누르면 그 ROI의 분석 결과가 표시됩니다.</li>
+</ol>
+<figure>
+  <a href="assets/img/12-load-info.png"><img src="assets/img/12-load-info.png" alt="Load Info로 저장된 ROI 1과 분석 결과를 복원한 화면" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>복원된 ROI 1과 그 평균 전이, 이벤트 표</figcaption>
+</figure>
+<div class="warn"><span class="tag">주의</span><p>JSON에는 ND2 파일의 <b>경로</b>가 기록됩니다. 내보낸 뒤 ND2 파일을 옮기거나 이름을 바꾸면 <code>Movie file not found</code>가 뜨며 불러올 수 없습니다.</p></div>
+<p>이상으로 분석의 전 과정을 마칩니다. 자신의 데이터도 같은 순서로 분석합니다.</p>
+</div></section>
+
+<!-- ============ 4. REFERENCE ============ -->
+<h2 id="reference"><span class="secno">4</span>버튼 사전</h2>
+<p>그림의 번호와 표의 번호가 같습니다. 각 항목에 <b>무엇을 하는지</b>와 <b>언제·어떻게 설정하는지</b>를 적었습니다.</p>
+
+<h3 id="ref-controls"><span class="secno">4.1</span>Controls 패널</h3>
+<div class="fig-split" style="grid-template-columns:minmax(0,300px) minmax(0,1fr);align-items:start">
+<figure style="margin-top:0">
+  <a href="assets/img/panel-controls.png"><img src="assets/img/panel-controls.png" alt="번호가 붙은 Controls 패널" loading="lazy" width="303" height="1102"></a>
+  <figcaption>Controls 패널 전체(위에서 아래로 스크롤)</figcaption>
+</figure>
+<div class="tw" style="margin:0"><table>
+<tr><th class="n">#</th><th>이름</th><th>설명 · 설정 방법</th></tr>
+<tr><td colspan="3"><b>File</b></td></tr>
+<tr><td class="n"><span class="num">1</span></td><td><span class="btn">Open ND2</span></td><td>분석할 <code>.nd2</code> 파일을 엽니다. 다른 파일을 열면 현재 ROI와 저장된 ROI가 모두 지워지므로, 먼저 <span class="btn">Save</span>하세요.</td></tr>
+<tr><td class="n"><span class="num">2</span></td><td><span class="btn">Close ND</span></td><td>확인 창을 띄운 뒤 파일을 닫고 모든 ROI·분석을 지웁니다.</td></tr>
+<tr><td class="n"><span class="num">3</span></td><td>파일 경로</td><td>열린 파일의 경로. 선택해서 복사할 수 있습니다.</td></tr>
+<tr><td class="n"><span class="num">4</span></td><td><span class="btn">Save</span></td><td>저장된 ROI(<b>Use</b> 체크된 것)를 <code>&lt;파일명&gt;_ana</code> 폴더로 내보냅니다. <span class="btn">Save ROI</span>를 한 번 이상 해야 켜집니다.</td></tr>
+<tr><td class="n"><span class="num">5</span></td><td><span class="btn">Load Info</span></td><td><code>analysis_info.json</code>으로 이전 분석을 복원합니다.</td></tr>
+<tr><td colspan="3"><b>Playback</b></td></tr>
+<tr><td class="n"><span class="num">6</span></td><td><span class="btn">Play</span> / <span class="btn">Pause</span></td><td>기록된 타임스탬프에 맞춰 실제 속도로 재생·정지합니다. 세포가 박동하는지, 움직이는지 확인할 때 씁니다.</td></tr>
+<tr><td class="n"><span class="num">7</span></td><td>Frame 표시</td><td><code>Frame: 현재 / 전체 | Time: …</code>. Time은 ND2에 저장된 값이라 파일에 따라 매우 큰 숫자일 수 있습니다(<a href="#limits">제약 6</a>).</td></tr>
+<tr><td class="n"><span class="num">8</span></td><td>프레임 슬라이더</td><td>끌어서 원하는 프레임으로 이동합니다. 그래프의 흰 점선이 따라 움직입니다.</td></tr>
+<tr><td class="n"><span class="num">9</span></td><td>프레임 번호 칸</td><td>번호를 입력해 이동합니다. 0부터 시작합니다(Frame 표시는 1부터).</td></tr>
+<tr><td colspan="3"><b>Background</b></td></tr>
+<tr><td class="n"><span class="num">10</span></td><td><span class="btn">Add Background</span></td><td>파란 원형 배경 ROI(120 × 120 px)를 가운데에 놓습니다. 세포 없는 곳으로 끌어 옮기세요. 배경 밝기는 모든 세포 신호에서 프레임마다 빼집니다.</td></tr>
+<tr><td class="n"><span class="num">11</span></td><td><span class="btn">Recommend Background</span></td><td>반경 R인 원 100개를 무작위로 놓아 처음 10 s 평균이 가장 어두운 곳에 배경을 둡니다. 결과 위치를 눈으로 확인하세요.</td></tr>
+<tr><td class="n"><span class="num">12</span></td><td>R (반경)</td><td>추천 배경 원의 반경(px). 기본 10. 빈 공간이 넓으면 키울수록 잡음이 줄어듭니다.</td></tr>
+<tr><td class="n"><span class="num">13</span></td><td><span class="btn">Clear Background ROI</span></td><td>배경 ROI를 지웁니다. 이후 신호는 배경을 빼지 않은 값이 됩니다.</td></tr>
+<tr><td colspan="3"><b>ROI</b></td></tr>
+<tr><td class="n"><span class="num">14</span></td><td>Shape</td><td>다음에 추가할 ROI 모양. <i>Ellipse</i>(둥근 세포·영역), <i>Rectangle</i>(막대 모양 세포). 둘 다 회전됩니다.</td></tr>
+<tr><td class="n"><span class="num">15</span></td><td><span class="btn">Add ROI</span></td><td>80 × 80 px ROI를 추가합니다. 여러 개 추가하면 한 번에 함께 분석됩니다(ROI 1, ROI 2 …).</td></tr>
+<tr><td class="n"><span class="num">16</span></td><td><span class="btn">(op) Auto ROI</span></td><td>선택 기능. 가장 최근 ROI 안에서 처음 3 s 동안 변화가 큰 픽셀(상위 10%)을 감싸는 다각형으로 바꿉니다. 다시 누르면 되돌립니다.</td></tr>
+<tr><td class="n"><span class="num">17</span></td><td><span class="btn">Calculate</span></td><td>ROI마다 평균 밝기 − 배경을 계산해 그래프에 그립니다. ROI를 바꿀 때마다 다시 누르세요. 처음엔 영상 전체를 메모리에 올려 시간이 걸립니다.</td></tr>
+<tr><td class="n"><span class="num">18</span></td><td><span class="btn">Save ROI</span></td><td>현재 ROI들의 신호·이벤트·요약을 저장하고 ROI를 잠급니다. 작업 공간은 다음 세포를 위해 비워집니다.</td></tr>
+<tr><td class="n"><span class="num">19</span></td><td><span class="btn">Clear ROIs</span></td><td>저장하지 않은 현재 ROI와 분석을 지웁니다(저장된 ROI는 남음).</td></tr>
+<tr><td colspan="3"><b>Photobleaching</b></td></tr>
+<tr><td class="n"><span class="num">20</span></td><td><span class="btn">Cal. Photobleaching</span></td><td>기저선에 강건한 직선을 맞춘 미리보기를 그립니다. 노란 점선 = 맞춘 선, 빨간 점 = 사용한 기저선.</td></tr>
+<tr><td class="n"><span class="num">21</span></td><td><span class="btn">Confirm Photobleaching</span></td><td>보정을 적용합니다(신호가 노란색). 전이 분석이 지워지므로 다시 계산하세요.</td></tr>
+<tr><td class="n"><span class="num">22</span></td><td><span class="btn">Reset Photobleaching</span></td><td>보정 전 신호와 기본 설정으로 되돌립니다.</td></tr>
+<tr><td class="n"><span class="num">23</span></td><td>Pre <span class="v">50 ms</span></td><td>각 박동 시작 <b>전</b> 기저선에서 뺄 시간. 상승 직전이 기저선에 섞이면 늘리세요.</td></tr>
+<tr><td class="n"><span class="num">24</span></td><td>Post <span class="v">200 ms</span></td><td>각 박동 회복 <b>후</b> 뺄 시간. 감쇠 꼬리가 빨간 점에 섞이면 늘리세요.</td></tr>
+<tr><td class="n"><span class="num">25</span></td><td>Base <span class="v">10 %</span></td><td>보정 창에서 기저선으로 남아야 하는 최소 비율. 부족하면 그 ROI는 보정하지 않습니다(Status에 <code>skipped</code>). 빠른 자극에서 기저선이 짧으면 낮추세요.</td></tr>
+<tr><td class="n"><span class="num">26</span></td><td>Fit S</td><td>보정에 쓸 구간 시작(s). 기본은 Tran. 구간을 따라갑니다. 직접 바꾸면 그 값을 유지합니다.</td></tr>
+<tr><td class="n"><span class="num">27</span></td><td>Fit E</td><td>보정에 쓸 구간 끝(s).</td></tr>
+<tr><td class="n"><span class="num">28</span></td><td>Robust <span class="v">1.0 ×</span></td><td>튀는 값에 대한 둔감도. 작게 하면 튀는 점의 영향을 더 줄입니다. 보통 1.0 그대로 둡니다.</td></tr>
+<tr><td colspan="3"><b>Status</b></td></tr>
+<tr><td class="n"><span class="num">29</span></td><td>Status</td><td>방금 한 동작의 결과와 오류를 문장으로 보여 줍니다. 항상 확인하세요.</td></tr>
+</table></div>
+</div>
+
+<h3 id="ref-graph"><span class="secno">4.2</span>Graph analysis 패널</h3>
+<figure>
+  <a href="assets/img/panel-graph.png"><img src="assets/img/panel-graph.png" alt="번호가 붙은 Graph analysis 패널" loading="lazy" width="1628" height="393"></a>
+</figure>
+<div class="tw"><table>
+<tr><th class="n">#</th><th>이름</th><th>설명 · 설정 방법</th></tr>
+<tr><td class="n"><span class="num">1</span></td><td>Tran. Start</td><td>전이 분석 구간의 시작(s). 주황 띠의 왼쪽 끝과 연동됩니다.</td></tr>
+<tr><td class="n"><span class="num">2</span></td><td>Tran. End</td><td>전이 분석 구간의 끝(s). 마지막 박동 뒤로 Pacing interval 이상 여유를 두세요.</td></tr>
+<tr><td class="n"><span class="num">3</span></td><td>전체 그래프</td><td>기록 전체의 신호. <span class="sw tran"></span>주황 띠를 끌어 분석 구간을 정합니다. 흰 점선 = 현재 프레임. 이 그래프는 확대되지 않습니다.</td></tr>
+<tr><td class="n"><span class="num">4</span></td><td>Detail view X</td><td>상세 그래프의 시간 범위(Start/End, s)를 숫자로 지정합니다.</td></tr>
+<tr><td class="n"><span class="num">5</span></td><td>Detail view Y</td><td>상세 그래프의 밝기 범위를 숫자로 지정합니다.</td></tr>
+<tr><td class="n"><span class="num">6</span></td><td>상세 그래프</td><td>마우스 휠 = 확대/축소, 끌기 = 이동. 봉우리 모양과 보정선을 자세히 볼 때 씁니다.</td></tr>
+</table></div>
+
+<h3 id="ref-analysis"><span class="secno">4.3</span>Transient analysis 패널</h3>
+<div class="fig-split" style="grid-template-columns:minmax(0,480px) minmax(0,1fr);align-items:start">
+<figure style="margin-top:0">
+  <a href="assets/img/panel-analysis.png"><img src="assets/img/panel-analysis.png" alt="번호가 붙은 Transient analysis 패널" loading="lazy" width="588" height="721"></a>
+</figure>
+<div class="tw" style="margin:0"><table>
+<tr><th class="n">#</th><th>이름</th><th>설명 · 설정 방법</th></tr>
+<tr><td class="n"><span class="num">1</span></td><td><span class="btn">Calculate transients</span></td><td>Tran. 구간에서 박동을 검출하고 평균·표를 만듭니다. 설정을 바꾸면 다시 누르세요.</td></tr>
+<tr><td class="n"><span class="num">2</span></td><td>Peak cutoff <span class="v">3 ×</span></td><td>봉우리가 기저선 잡음의 몇 배를 넘어야 박동으로 인정할지. 잡음이 박동으로 잡히면 올리고(4–5), 작은 박동이 빠지면 내리세요(2).</td></tr>
+<tr><td class="n"><span class="num">3</span></td><td>Pacing interval <span class="v">500 ms</span></td><td>박동 사이 최소 간격이자 박동 뒤 분석 창. 기본값은 500 ms이며, 이 예제에서는 450 ms를 수동 입력합니다. <a href="#limits">제약 1</a></td></tr>
+<tr><td class="n"><span class="num">4</span></td><td>Before start <span class="v">50 ms</span></td><td>onset 앞 구간. 이 구간의 평균이 F₀(기준 밝기)가 됩니다. 박동 사이의 평평한 바닥 안에 들어가도록 두세요.</td></tr>
+<tr><td class="n"><span class="num">5–7</span></td><td>Decay 1 / 2 / 3 <span class="v">10 / 50 / 90 %</span></td><td>피크에서 진폭의 몇 %가 줄어든 시점을 보고할지. 바꾼 뒤 <span class="btn">Calculate transients</span>를 다시 누르세요.</td></tr>
+<tr><td class="n"><span class="num">8</span></td><td>평균 전이 그래프</td><td>가는 선 = 체크된 개별 박동, 굵은 선 = 평균(F/F₀). X축은 onset부터의 시간.</td></tr>
+<tr><td class="n"><span class="num">9</span></td><td>이벤트 표</td><td>박동 한 번당 한 줄. <b>Use</b>로 포함/제외. 열 설명은 아래 표.</td></tr>
+<tr><td class="n"><span class="num">10</span></td><td>Saved ROI 표</td><td>저장된 ROI마다 한 줄. <b>Use</b> = 내보내기 포함 여부. 줄을 누르면 그 ROI 분석을 다시 보여 줍니다.</td></tr>
+</table></div>
+</div>
+
+<h4>이벤트 표의 열</h4>
+<div class="tw"><table>
+<tr><th>열</th><th>뜻</th><th>단위</th></tr>
+<tr><td><b>Use</b></td><td>체크 = 평균·요약에 포함</td><td></td></tr>
+<tr><td><b>Event</b></td><td>ROI 이름과 박동 번호 (예: ROI 1 #3)</td><td></td></tr>
+<tr><td><b>Ab_start</b></td><td>onset(진폭 10% 도달) 시각, 기록 시작 기준</td><td class="v">s</td></tr>
+<tr><td><b>Ab_peak</b></td><td>피크 시각</td><td class="v">s</td></tr>
+<tr><td><b>Peak time ms</b></td><td>Time to peak = Ab_peak − Ab_start</td><td class="v">ms</td></tr>
+<tr><td><b>Amp dF/F0</b></td><td>(피크 − 기저선) ÷ F₀</td><td class="v">배</td></tr>
+<tr><td><b>Max d(F/F0)/dt</b></td><td>onset~피크 사이 가장 가파른 상승 속도</td><td class="v">s⁻¹</td></tr>
+<tr><td><b>Ab_decay X%</b></td><td>진폭이 X% 줄어든 시각</td><td class="v">s</td></tr>
+<tr><td><b>Decay time X% ms</b></td><td>피크부터 X% 감쇠까지 걸린 시간</td><td class="v">ms</td></tr>
+</table></div>
+<p><code>NA</code>는 측정할 수 없었다는 뜻입니다(예: 분석 창 안에서 90%까지 내려오지 않음).</p>
+<h4>Saved ROI 표의 열</h4>
+<p><b>ROI</b>(번호), <b>Tran N</b>(체크된 박동 수), <b>Tran Amp dF/F0</b>, <b>Tran Peak ms</b>, <b>Tran Max d(F/F0)/dt</b>, <b>Tran Decay X% ms</b>: 모두 체크된 박동들의 <b>평균</b>입니다. 저장된 ROI를 보는 중에 이벤트 표의 <b>Use</b>를 바꾸면 이 값도 갱신됩니다.</p>
+
+<!-- ============ 5. SETTINGS ============ -->
+<h2 id="settings"><span class="secno">5</span>설정값 고르는 법</h2>
+<p>자신의 데이터에서 무엇을 어떻게 정할지 순서대로 정리했습니다.</p>
+<div class="tw"><table>
+<tr><th>순서</th><th>설정</th><th>권장</th><th>확인 방법</th></tr>
+<tr><td class="v">1</td><td>배경 ROI</td><td>세포·부유물이 없고 영상 가장자리 그림자가 아닌 곳. 가능한 넓게.</td><td>재생해 보며 그 자리에 아무것도 지나가지 않는지</td></tr>
+<tr><td class="v">2</td><td>세포 ROI</td><td>세포 경계 약간 안쪽, 이웃 세포와 겹치지 않게</td><td>여러 프레임에서 세포가 ROI 밖으로 움직이지 않는지</td></tr>
+<tr><td class="v">3</td><td>Tran. 구간</td><td>자극이 안정된 구간, 끝에 Pacing interval 이상 여유</td><td>구간 안 봉우리 수를 셉니다</td></tr>
+<tr><td class="v">4</td><td>Pacing interval</td><td>기본값 500 ms. 이 예제는 450 ms를 수동 입력하며, 다른 기록은 실제 파형과 검출 결과를 확인하여 설정</td><td><b>Tran N ≈ 구간 길이 × 자극 주파수</b></td></tr>
+<tr><td class="v">5</td><td>Peak cutoff</td><td>3에서 시작</td><td>빠진 박동이 있으면 낮추고, 잡음이 잡히면 올림</td></tr>
+<tr><td class="v">6</td><td>광퇴색 보정</td><td>기저선이 눈에 띄게 기울 때만. 기본값 사용</td><td>빨간 점이 바닥에만 있는지</td></tr>
+<tr><td class="v">7</td><td>Before start</td><td>50 ms (박동 사이 평평한 구간보다 짧게)</td><td>평균 그래프의 0 ms 왼쪽이 평평한지</td></tr>
+<tr><td class="v">8</td><td>Decay 수준</td><td>10 / 50 / 90 % (논문 기준)</td><td>NA가 많으면 분석 창(Pacing interval)이 짧은지 확인</td></tr>
+</table></div>
+<div class="note"><span class="tag">보고할 때</span><p>논문이나 보고서에는 사용한 <b>Pacing interval, Peak cutoff, Before start, 광퇴색 보정 여부</b>와 MOSAIC 버전(v0.1.0)을 함께 적어 주세요.</p></div>
+
+<!-- ============ 6. OUTPUTS ============ -->
+<h2 id="outputs"><span class="secno">6</span>결과 파일 읽는 법</h2>
+<p><span class="btn">Save</span>를 누르면 ND2 파일 옆 <code>&lt;파일명&gt;_ana</code> 폴더에 저장됩니다.</p>
+<div class="tw"><table>
+<tr><th>파일</th><th>내용</th><th>열 구성</th></tr>
+<tr><td><code>analysis.xlsx</code></td><td>ROI별 요약(Saved ROI 표와 같음). 통계 분석에 바로 씁니다.</td><td>ROI · Tran N · Tran Amp dF/F0 · Tran Peak ms · Tran Max d(F/F0)/dt · Tran Decay X% ms</td></tr>
+<tr><td><code>rawtrace.xlsx</code></td><td>ROI별 전체 신호(배경 차감, 광퇴색 보정 <b>전</b>)</td><td>Time s · ROI 1 · ROI 2 …</td></tr>
+<tr><td><code>transient.xlsx</code></td><td>ROI별 평균 전이 곡선(F/F₀). 그림 그릴 때 씁니다.</td><td>ROI n transient time s · ROI n transient F/F0 (ROI마다 두 열)</td></tr>
+<tr><td><code>ROI.jpg</code></td><td>첫 프레임 위에 저장된 ROI 외곽선과 번호</td><td></td></tr>
+<tr><td><code>analysis_info.json</code></td><td><span class="btn">Load Info</span>용 전체 기록(ROI 위치, 신호, 이벤트 선택)</td><td></td></tr>
+</table></div>
+<p>예제 결과의 크기: <code>analysis.xlsx</code> 2 KB, <code>rawtrace.xlsx</code> 95 KB, <code>transient.xlsx</code> 8 KB, <code>ROI.jpg</code> 36 KB, <code>analysis_info.json</code> 370 KB.</p>
+
+<!-- ============ 7. LIMITS ============ -->
+<h2 id="limits"><span class="secno">7</span>알려진 제약 (v0.1.0)</h2>
+<p>결과를 올바르게 해석할 수 있도록 현재 버전의 동작을 적어 둡니다. 다음 버전에서 검토할 예정이며, 바뀌는 내용은 릴리스 노트에 기록합니다.</p>
+
+<div class="warn">
+<span class="tag">제약 1</span>
+<h3 style="margin-top:0">Pacing interval과 검출되는 박동 수</h3>
+<p><b>Pacing interval</b>은 박동 사이의 최소 간격이면서 박동 뒤 분석 창으로도 쓰입니다. 박동 간격이 입력값과 <b>같거나 짧으면</b> 일부 박동이 보고되지 않아 <b>Tran N</b>이 실제 박동 수보다 작아집니다. 광퇴색 보정도 같은 검출을 쓰므로, 빠진 박동이 기저선 점(빨간 점)에 섞일 수 있습니다.</p>
+<div class="fig-split">
+<figure>
+  <a href="assets/img/limit-pacing-500ms.png"><img src="assets/img/limit-pacing-500ms.png" alt="Pacing interval 500 ms: 7개만 검출" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>예제, 500 ms 입력: <b>7개</b> 검출</figcaption>
+</figure>
+<figure>
+  <a href="assets/img/limit-pacing-450ms.png"><img src="assets/img/limit-pacing-450ms.png" alt="Pacing interval 450 ms: 14개 검출" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>같은 데이터, 450 ms 입력: <b>14개</b> 검출</figcaption>
+</figure>
+</div>
+<ul>
+  <li>이 예제는 Pacing interval에 450 ms를 수동 입력합니다. 다른 기록에 일률적으로 적용하지 마세요.</li>
+  <li><b>Tran N</b>을 구간 안의 예상 박동 수와 항상 비교하세요.</li>
+  <li>Pacing interval을 <span class="btn">Cal. Photobleaching</span>보다 먼저 정하세요.</li>
+  <li>분석마다 사용한 값을 기록·보고하세요.</li>
+</ul>
+</div>
+
+<div class="tw"><table>
+<tr><th>#</th><th>제약</th><th>내용과 대처</th></tr>
+<tr><td class="v">2</td><td>메모리</td><td>처음 <span class="btn">Calculate</span> 때 영상 전체를 메모리에 올립니다. 필요량 ≈ 프레임 × 높이 × 너비 × 픽셀당 바이트 (예: 600 × 600 8-bit 12,406 frames ≈ 4.5 GB). RAM이 부족하면 매우 느려지거나 종료됩니다.</td></tr>
+<tr><td class="v">3</td><td>영상 표시 범위</td><td>0–255 고정 표시. 8-bit 초과 영상은 하얗게 보이지만 측정은 원래 값을 쓰므로 정확합니다.</td></tr>
+<tr><td class="v">4</td><td>ND2 구조</td><td>단일 채널 time-lapse(T × Y × X)만 지원. 다채널·Z-stack·다지점은 미지원.</td></tr>
+<tr><td class="v">5</td><td>고정 내부 설정</td><td>평활 창 20 ms, onset = 진폭 10%, 회복 = 진폭 25% 미만 30 ms 유지. 측정은 평활된 신호로 하므로, 매우 빠른 상승에서는 time to peak가 약간 길게 나올 수 있습니다.</td></tr>
+<tr><td class="v">6</td><td>Frame 시간 표시</td><td>ND2에 저장된 값을 그대로 표시해 매우 큰 숫자일 수 있음. 그래프·측정은 첫 프레임 기준.</td></tr>
+<tr><td class="v">7</td><td>화면에 없는 기능</td><td>카페인 유도(SR) Ca²⁺ 방출 분석 코드가 있으나 v0.1.0 화면에는 버튼이 없습니다.</td></tr>
+<tr><td class="v">8</td><td>응답 없음</td><td>영상 로딩, Auto ROI, Recommend Background 중에는 창이 멈춘 듯 보입니다. Status가 바뀔 때까지 기다리세요.</td></tr>
+</table></div>
+
+<!-- ============ 8. TROUBLE ============ -->
+<h2 id="trouble"><span class="secno">8</span>문제 해결</h2>
+<div class="tw"><table>
+<tr><th>증상</th><th>원인</th><th>해결</th></tr>
+<tr><td>검은 창에 <code>Failed to create .venv</code></td><td>Python 미설치·PATH 미등록, 또는 동기화 폴더</td><td>Python을 PATH 옵션과 함께 설치 → MOSAIC을 로컬 폴더로 옮김 → <code>.venv</code> 폴더 삭제 → 다시 실행</td></tr>
+<tr><td><code>WinError 32</code> (다른 프로세스가 파일 사용 중)</td><td>Dropbox·OneDrive·백신이 설치 파일을 잠금</td><td>동기화 폴더 밖으로 옮기고 <code>.venv</code> 삭제 후 다시 실행</td></tr>
+<tr><td>검은 창이 뜨자마자 사라짐</td><td>오류 메시지를 볼 수 없음</td><td>MOSAIC 폴더에서 주소창에 <code>cmd</code> 입력 → <code>run_app.bat</code> 실행해 메시지 확인</td></tr>
+<tr><td><span class="btn">Calculate</span> 뒤 매우 느림·종료</td><td>메모리 부족</td><td>다른 프로그램 종료, RAM 큰 컴퓨터 사용</td></tr>
+<tr><td>영상이 새하얗거나 새까맘</td><td>8-bit 초과 영상 / 원래 어두운 영상</td><td>표시만의 문제입니다. 측정에는 영향 없음</td></tr>
+<tr><td><code>No transients detected</code></td><td>구간·설정 문제</td><td>Tran. 구간 확인 → Peak cutoff 낮추기 → Pacing interval 확인 → ROI·배경 위치 확인</td></tr>
+<tr><td>Tran N이 박동 수보다 적음</td><td>제약 1</td><td>실제 파형과 검출 이벤트를 대조하고 Pacing interval 확인(이 예제: 450 ms)</td></tr>
+<tr><td>감쇠 시간이 NA</td><td>분석 창 안에서 그 수준까지 안 내려옴</td><td>Tran. 끝에 여유 두기, 이벤트 확인</td></tr>
+<tr><td>광퇴색 Status에 <code>skipped</code></td><td>기저선 점 부족</td><td>Base 낮추기, Fit S/E 넓히기, Pre/Post 줄이기</td></tr>
+<tr><td><span class="btn">Save</span>가 회색</td><td>저장된 ROI 없음</td><td><span class="btn">Save ROI</span> 먼저</td></tr>
+<tr><td><code>Movie file not found</code></td><td>ND2 파일 이동·이름 변경</td><td>원래 경로로 되돌리기</td></tr>
+</table></div>
+
+<!-- ============ 9. GLOSSARY ============ -->
+<h2 id="glossary"><span class="secno">9</span>용어 풀이</h2>
+<dl class="terms">
+  <dt>ND2</dt><dd>Nikon NIS-Elements가 저장하는 영상 파일. 프레임과 촬영 시각이 함께 들어 있습니다.</dd>
+  <dt>ROI</dt><dd>Region of interest. 밝기를 잴 영역(예: 세포 한 개).</dd>
+  <dt>배경 ROI</dt><dd>세포가 없는 영역. 카메라 잡음과 배경 밝기를 빼는 데 씁니다.</dd>
+  <dt>Trace (신호)</dt><dd>ROI 안 평균 밝기를 시간에 따라 그린 선.</dd>
+  <dt>Ca²⁺ transient (전이)</dt><dd>박동 한 번마다 칼슘 형광이 빠르게 올랐다가 천천히 내려오는 파형.</dd>
+  <dt>F₀, F/F₀</dt><dd>F₀ = 박동 직전 기준 밝기(Before start 구간 평균). F/F₀ = 밝기 ÷ F₀. 세포마다 밝기가 달라도 비교할 수 있게 합니다.</dd>
+  <dt>Onset</dt><dd>박동 시작 시점. 진폭의 10%에 도달한 때.</dd>
+  <dt>Time to peak</dt><dd>onset부터 피크까지 시간.</dd>
+  <dt>Decay X%</dt><dd>피크 후 진폭이 X% 줄어들 때까지 시간. Decay 50%는 절반으로 줄어드는 시간.</dd>
+  <dt>Photobleaching (광퇴색)</dt><dd>빛에 계속 노출되어 형광이 서서히 약해지는 현상.</dd>
+  <dt>Pacing interval</dt><dd>전기 자극 사이 간격. 2 Hz = 500 ms.</dd>
+  <dt>Prominence / Peak cutoff</dt><dd>봉우리가 주변보다 얼마나 솟았는지. Peak cutoff는 그 기준을 잡음의 배수로 정합니다.</dd>
+</dl>
+
+<section id="patch-note" class="note">
+<h2>0.1.1 note (미반영)</h2>
+<p>수정 제안: <b>Pacing interval 기본값을 500 ms에서 450 ms로 변경</b>.</p>
+<p>현재 제공 기준은 원본 <b>v0.1.0</b>이며 기본값은 <b>500 ms</b>입니다. 이 변경은 아직 앱에 반영되지 않았습니다. 향후 0.1.1 패치에서 기본값만 조정하며, 검출 알고리즘과 나머지 기능은 변경하지 않습니다.</p>
+</section>
+<footer>
+<p>MOSAIC v0.1.0 · 이 설명서의 스크린샷과 기대값은 v0.1.0에서 예제 파일로 자동 생성했습니다. · 이 프로그램을 사용하면 함께 발표되는 논문을 인용해 주세요(출판 후 추가 예정). · <a href="guide-en.html" class="lang-switch">English version</a></p>
+</footer>
+</div>
+</main>
+</div>
+
+<script>
+// Keep the reader at the same section when switching language.
+(function () {
+  function sync() {
+    document.querySelectorAll("a.lang-switch").forEach(function (a) {
+      a.setAttribute("href", "guide-en.html" + location.hash);
+    });
+  }
+  window.addEventListener("hashchange", sync);
+  sync();
+})();
+</script>
+</body>
+</html>

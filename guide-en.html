@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOSAIC User Guide</title>
+<meta name="description" content="MOSAIC v0.1.0 user guide: installation, a step-by-step example analysis, and every button and setting explained.">
+<link rel="alternate" hreflang="ko" href="guide-ko.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@400;700&family=Noto+Serif+KR:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="index.html">MOSAIC<small>User Guide</small></a>
+    <span class="ver">v0.1.0</span>
+    <span class="spacer"></span>
+    <a class="navlink" href="index.html#downloads">Downloads</a>
+    <nav class="langs" aria-label="Language">
+      <a href="guide-ko.html" class="lang-switch" lang="ko">한국어</a>
+      <a href="guide-en.html" aria-current="true" lang="en">English</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <p>Contents</p>
+  <ol>
+    <li><a href="#start">Before you start</a></li>
+    <li><a href="#install">1. Install and launch</a></li>
+    <li><a href="#first-look">2. The window at a glance</a></li>
+    <li><a href="#tutorial">3. Example walkthrough</a>
+      <ol>
+        <li><a href="#t1">3.1 Open the file</a></li>
+        <li><a href="#t2">3.2 Background ROI</a></li>
+        <li><a href="#t3">3.3 Cell ROI</a></li>
+        <li><a href="#t4">3.4 Calculate traces</a></li>
+        <li><a href="#t5">3.5 Analysis range</a></li>
+        <li><a href="#t6">3.6 Pacing interval</a></li>
+        <li><a href="#t7">3.7 Photobleaching</a></li>
+        <li><a href="#t8">3.8 Calculate transients</a></li>
+        <li><a href="#t9">3.9 Review events</a></li>
+        <li><a href="#t10">3.10 Save ROI</a></li>
+        <li><a href="#t11">3.11 Export results</a></li>
+        <li><a href="#t12">3.12 Reload</a></li>
+      </ol>
+    </li>
+    <li><a href="#reference">4. Button reference</a>
+      <ol>
+        <li><a href="#ref-controls">4.1 Controls panel</a></li>
+        <li><a href="#ref-graph">4.2 Graph analysis panel</a></li>
+        <li><a href="#ref-analysis">4.3 Transient analysis panel</a></li>
+      </ol>
+    </li>
+    <li><a href="#settings">5. Choosing settings</a></li>
+    <li><a href="#outputs">6. Reading the output files</a></li>
+    <li><a href="#limits">7. Known limitations</a></li>
+    <li><a href="#trouble">8. Troubleshooting</a></li>
+    <li><a href="#glossary">9. Glossary</a></li>
+  </ol>
+</nav>
+
+<main>
+<div class="prose">
+
+<h1 id="start">MOSAIC User Guide</h1>
+<p class="lede">This guide describes the installation of MOSAIC version 0.1.0, a complete analysis of the example recording, and every control and setting.</p>
+
+<p><b>MOSAIC</b> (Multi-ROI Optical System for Analysis of Intracellular Calcium) analyzes cardiomyocyte Ca²⁺ transients in high-speed Nikon ND2 fluorescence recordings. You place ROIs over cells or parts of cells in one field of view; MOSAIC detects the calcium signal of each beat and reports amplitude, time to peak, maximum rising rate, and decay times.</p>
+
+<div class="note">
+  <span class="tag">Organization of this guide</span>
+  <ul>
+    <li>New users: follow <a href="#install">1. Install</a> and then <a href="#tutorial">3. Example walkthrough</a> in order. It takes about 20 minutes.</li>
+    <li>Looking for one button: find its number in <a href="#reference">4. Button reference</a>.</li>
+    <li>Before analyzing your own data, read <a href="#settings">5. Choosing settings</a> and <a href="#limits">7. Known limitations</a>.</li>
+  </ul>
+</div>
+
+<h3>What you need</h3>
+<ul class="check">
+  <li>A Windows 10/11 or macOS computer. RAM of at least twice the ND2 file size is recommended (the example file is 0.3 GB, so most computers are fine).</li>
+  <li>An internet connection. Required components are downloaded automatically on first launch.</li>
+  <li>The MOSAIC program (ZIP) and the example file <code>MOSAIC_example_2Hz.nd2</code> from the <a href="index.html#downloads">home page</a></li>
+  <li>A working folder on a local disk. <b>Avoid Dropbox, OneDrive, iCloud, and Google Drive folders.</b></li>
+</ul>
+
+<!-- ============ 1. INSTALL ============ -->
+<h2 id="install"><span class="secno">1</span>Install and launch</h2>
+<p>Installation is needed once per computer. Afterwards you start MOSAIC by double-clicking one file.</p>
+
+<h3 id="python"><span class="secno">1.1</span>Install Python</h3>
+<p>MOSAIC is written in Python and needs Python 3.9 or later. Skip this if it is already installed.</p>
+<ol>
+  <li>At <a href="https://www.python.org/downloads/">python.org/downloads</a>, click <b>Download Python</b>.</li>
+  <li>Run the installer.</li>
+  <li><b>Windows</b>: tick <b>Add python.exe to PATH</b> at the bottom of the first screen, then click <b>Install Now</b>.</li>
+  <li><b>macOS</b>: follow the installer to the end.</li>
+</ol>
+<div class="warn"><span class="tag">Common mistake</span><p>If <b>Add python.exe to PATH</b> is not ticked on Windows, MOSAIC cannot find Python. Run the Python installer again and choose <b>Modify</b> to enable it, or uninstall and reinstall.</p></div>
+
+<h3 id="download"><span class="secno">1.2</span>Get MOSAIC</h3>
+<ol>
+  <li>From <a href="index.html#downloads">Downloads</a>, get <b>MOSAIC v0.1.0 (ZIP)</b>.</li>
+  <li>Right-click the ZIP → <b>Extract All</b> to a local folder, for example <code>C:\MOSAIC</code>.</li>
+  <li>From the same page, download <code>MOSAIC_example_2Hz.nd2</code> and keep it somewhere easy to find, such as <code>C:\MOSAIC-data</code>.</li>
+</ol>
+<div class="note"><span class="tag">Why synced folders should be avoided</span><p>The first launch installs several hundred MB of components. If a sync client locks those files to upload them, installation stops with <code>WinError 32</code>. Results (<code>_ana</code> folder) are also written next to the ND2 file, so keep ND2 files in a writable local location too.</p></div>
+
+<h3 id="run"><span class="secno">1.3</span>Launch</h3>
+<div class="tw"><table>
+<tr><th>System</th><th>How to launch</th></tr>
+<tr><td>Windows</td><td>Double-click <code>run_app.bat</code> in the MOSAIC folder. If "Windows protected your PC" appears, click <b>More info → Run anyway</b>.</td></tr>
+<tr><td>macOS</td><td>Double-click <code>run_app.command</code>. If blocked, right-click → <b>Open</b>. If that fails, run <code>chmod +x run_app.command</code> once in Terminal.</td></tr>
+</table></div>
+<p>The <b>first launch</b> shows <code>Creating Python virtual environment...</code> and <code>Installing Python packages...</code> in a console window and takes several minutes; then the MOSAIC window opens. Later launches take a few seconds.</p>
+<figure>
+  <a href="assets/img/01-start.png"><img src="assets/img/01-start.png" alt="MOSAIC right after launch; most buttons are disabled because no file is open" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>MOSAIC after launch. With no file open, every button except <span class="btn">Open ND2</span> and <span class="btn">Load Info</span> is grey (disabled). This is normal.</figcaption>
+</figure>
+<details>
+  <summary>Launching from a terminal (optional)</summary>
+<pre><code>python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+python -m pip install -e .
+PYTHONPATH="$PWD/src" python -m mosaic.main</code></pre>
+</details>
+
+<!-- ============ 2. FIRST LOOK ============ -->
+<h2 id="first-look"><span class="secno">2</span>The window at a glance</h2>
+<p>The MOSAIC window has four areas. Drag an edge to resize an area, or drag its title bar to move it.</p>
+<figure>
+  <a href="assets/img/00-layout.png"><img src="assets/img/00-layout.png" alt="The four areas of the MOSAIC window: A Controls, B Image, C Transient analysis, D Graph analysis" loading="lazy" width="1628" height="1028"></a>
+  <figcaption>The window right after opening the example file, with its four areas</figcaption>
+</figure>
+<div class="tw"><table>
+<tr><th class="n"></th><th>Area</th><th>What it does</th><th>Details</th></tr>
+<tr><td class="n"><span class="num">A</span></td><td><b>Controls</b></td><td>Open and save files, playback, background ROI, cell ROIs, photobleaching correction, Status message</td><td><a href="#ref-controls">Controls panel</a></td></tr>
+<tr><td class="n"><span class="num">B</span></td><td><b>Image</b></td><td>The current frame. Place and drag ROIs here; zoom with the mouse wheel.</td><td><a href="#t3">Cell ROI</a></td></tr>
+<tr><td class="n"><span class="num">C</span></td><td><b>Transient analysis</b></td><td>Detection settings, average transient graph, event table, saved ROI table</td><td><a href="#ref-analysis">Transient analysis panel</a></td></tr>
+<tr><td class="n"><span class="num">D</span></td><td><b>Graph analysis</b></td><td>Top: whole recording and analysis range (orange band) · Bottom: zoomable detail graph</td><td><a href="#ref-graph">Graph analysis panel</a></td></tr>
+</table></div>
+<div class="note"><span class="tag">Note</span><p>The <b>Status</b> box at the bottom of Controls describes the result of the last action in a sentence. If something looks wrong, read Status first. Most "Check" boxes in this guide refer to Status messages.</p></div>
+
+<!-- ============ 3. TUTORIAL ============ -->
+<h2 id="tutorial"><span class="secno">3</span>Example walkthrough</h2>
+<p>Analyze one cell in <code>MOSAIC_example_2Hz.nd2</code> from start to finish.</p>
+<div class="tw"><table>
+<tr><th>Example file</th><th></th></tr>
+<tr><td>Content</td><td>Fluorescence calcium recording of adult cardiomyocytes under 2 Hz field stimulation (cropped from an original recording)</td></tr>
+<tr><td>Size</td><td class="v">288 × 240 px · 8-bit · 4,000 frames</td></tr>
+<tr><td>Interval / duration</td><td class="v">2.01 ms (≈ 500 frames/s) · 8.04 s</td></tr>
+<tr><td>File size</td><td class="v">295 MB</td></tr>
+</table></div>
+
+<section class="step" id="t1"><div>
+<h3><span class="secno">3.1</span>Open the ND2 file</h3>
+<ol>
+  <li>Click <span class="btn">Open ND2</span> in Controls.</li>
+  <li>Select <code>MOSAIC_example_2Hz.nd2</code> and click <b>Open</b>.</li>
+</ol>
+<figure>
+  <a href="assets/img/02-open.png"><img src="assets/img/02-open.png" alt="The example file opened" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>The first frame appears in the center and the buttons become active. The image looks dark; that is expected (8-bit, fixed 0–255 display).</figcaption>
+</figure>
+<div class="ok"><span class="tag">Check</span>
+<ul>
+  <li>Status: <code>Loaded ND2 | dtype=uint8 | sizes={'T': 4000, 'Y': 240, 'X': 288} …</code></li>
+  <li>Playback: <code>Frame: 1 / 4000 | Time: 0.000000 s</code></li>
+  <li>The graph time axis runs from 0 to 8 s.</li>
+</ul></div>
+<p><b>Tip</b>: <span class="btn">Play</span> plays the movie in real time; the horizontal cell in the middle brightens with every beat. Click again to stop.</p>
+</div></section>
+
+<section class="step" id="t2"><div>
+<h3><span class="secno">3.2</span>Place the background ROI</h3>
+<p>To remove camera noise and background brightness, place a background ROI where there are no cells.</p>
+<ol>
+  <li>Click <span class="btn">Add Background</span>. A <span class="sw bgroi"></span>blue circle appears in the center.</li>
+  <li>Drag the inside of the circle to the <b>dark empty area at the lower right</b>.</li>
+  <li>Drag the small handle on the circle's edge to shrink it so it does not touch a cell.</li>
+</ol>
+<figure>
+  <a href="assets/img/03-background.png"><img src="assets/img/03-background.png" alt="Blue background ROI in the empty lower-right area" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>Background ROI (blue circle) in the cell-free lower-right area</figcaption>
+</figure>
+<p><b>Alternative</b>: <span class="btn">Recommend Background</span> finds the darkest area over the first 10 s automatically. The search is random, so the position can change each time; check by eye that no cell is inside.</p>
+</div></section>
+
+<section class="step" id="t3"><div>
+<h3><span class="secno">3.3</span>Place an ROI over the cell</h3>
+<ol>
+  <li>In the ROI group, set <b>Shape</b> to <span class="fld">Rectangle</span>; rectangles fit rod-shaped cells well.</li>
+  <li>Click <span class="btn">Add ROI</span>. A yellow rectangle appears in the center.</li>
+  <li>Drag the inside of the rectangle onto the horizontal cell.</li>
+  <li>Use the <b>◇ handle</b> (lower right) to resize and the <b>○ handle</b> (right middle) to rotate until it sits just inside the cell outline.</li>
+</ol>
+<figure>
+  <a href="assets/img/04-roi.png"><img src="assets/img/04-roi.png" alt="Yellow rectangular ROI over the horizontal cell" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>Rectangular ROI (yellow) inside the cell outline</figcaption>
+</figure>
+<div class="note"><span class="tag">Placing an ROI</span>
+<ul>
+  <li>Slightly inside the cell border. Crossing the border mixes in background and lowers the amplitude.</li>
+  <li>Not overlapping neighboring cells.</li>
+  <li>To analyze part of a cell (for example one end), place a small ROI over that part only.</li>
+</ul></div>
+<p><b>Optional <span class="btn">(op) Auto ROI</span></b>: replaces the last ROI by a polygon enclosing the pixels that change most during the first 3 s. If you do not like it, click the same button (<span class="btn">(op) Undo Auto ROI</span>) to restore the original.</p>
+</div></section>
+
+<section class="step" id="t4"><div>
+<h3><span class="secno">3.4</span>Calculate the trace</h3>
+<ol><li>Click <span class="btn">Calculate</span>.</li></ol>
+<figure>
+  <a href="assets/img/05-calculate.png"><img src="assets/img/05-calculate.png" alt="After Calculate, a beating white trace appears in the graphs" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>The ROI brightness trace (white) appears in Graph analysis. Each peak, about every 0.5 s, is one beat.</figcaption>
+</figure>
+<div class="ok"><span class="tag">Check</span>
+<ul>
+  <li>About 16 regular peaks in the upper graph (8 s × 2 Hz).</li>
+  <li>Status includes <code>Background: set</code> and <code>Graph: background-corrected intensity</code>.</li>
+</ul></div>
+<p>The first click loads the whole movie into memory, so the window may pause briefly. After moving or resizing an ROI, <b>always click <span class="btn">Calculate</span> again</b> to update its trace.</p>
+</div></section>
+
+<section class="step" id="t5"><div>
+<h3><span class="secno">3.5</span>Set the analysis range (Tran.)</h3>
+<p>The <span class="sw tran"></span><b>orange band</b> in the upper graph is the time range searched for transients. It initially covers the first 25% of the recording.</p>
+<ol>
+  <li>Drag the right edge of the band almost to the end, or type <span class="fld">Start 0.2</span> and <span class="fld">End 7.8</span> in <b>Ranges → Tran.</b></li>
+  <li>Zoom into the lower detail graph with the mouse wheel to look at the peak shapes. <b>Detail view</b> X (for example 1–3 s) sets an exact range.</li>
+</ol>
+<figure>
+  <a href="assets/img/06-range.png"><img src="assets/img/06-range.png" alt="Orange analysis range widened to 0.2–7.8 s and lower graph zoomed to 1–3 s" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>Analysis range 0.2–7.8 s (top), zoomed to 1–3 s (bottom)</figcaption>
+</figure>
+<div class="note"><span class="tag">Choosing the range</span>
+<ul>
+  <li>Include only stable pacing. Leave out unstable beats right after stimulation starts and any movement or noise.</li>
+  <li>Leave at least one Pacing interval after the last peak so that it can be analyzed.</li>
+</ul></div>
+</div></section>
+
+<section class="step" id="t6"><div>
+<h3><span class="secno">3.6</span>Set Pacing interval first</h3>
+<p>The default in v0.1.0 is <b>500 ms</b>. For this example walkthrough, manually change <b>Pacing interval</b> to <span class="fld">450 ms</span> (click the box, type 450, press <kbd>Enter</kbd>).</p>
+<div class="warn"><span class="tag">Why 450 ms rather than 500 ms</span>
+<p>In the comparison for this example, 500 ms yielded 7 detected beats and 450 ms yielded 14. This walkthrough therefore uses a manually entered value of 450 ms in the unchanged v0.1.0 app. This is not an app modification or a fixed rule for all stimulation frequencies. Details are in <a href="#limits">7. Known limitations</a>.</p>
+<p>Photobleaching correction also uses this value to locate beats, so set it <b>before</b> photobleaching correction.</p></div>
+</div></section>
+
+<section class="step" id="t7"><div>
+<h3><span class="secno">3.7</span>Photobleaching correction (optional)</h3>
+<p>Under continuous illumination the fluorescence slowly fades and the baseline drifts down. Correct it when the baseline looks tilted.</p>
+<ol>
+  <li>Click <span class="btn">Cal. Photobleaching</span> in Controls.</li>
+  <li>Look at the <span class="sw corr"></span><b>yellow dashed line</b> (fitted baseline) and the <span class="sw base"></span><b>red points</b> (samples used as baseline).</li>
+  <li>If the red points lie only on the <b>flat bottom</b>, not on peaks, click <span class="btn">Confirm Photobleaching</span>.</li>
+</ol>
+<div class="fig-split">
+<figure>
+  <a href="assets/img/07-photobleaching-preview.png"><img src="assets/img/07-photobleaching-preview.png" alt="Photobleaching preview with yellow dashed baseline and red baseline points" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>Preview: the trace is not changed yet.</figcaption>
+</figure>
+<figure>
+  <a href="assets/img/08-photobleaching-confirmed.png"><img src="assets/img/08-photobleaching-confirmed.png" alt="Trace turned yellow after correction" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>Applied: the trace turns yellow.</figcaption>
+</figure>
+</div>
+<div class="ok"><span class="tag">Check</span>
+<ul>
+  <li>Preview Status: <code>Photobleaching preview calculated (ratio=1). Press Confirm Photobleaching to apply.</code></li>
+  <li>After applying: <code>Photobleaching correction confirmed and applied.</code></li>
+</ul></div>
+<p>Red points on top of peaks mean those beats were not detected. Check <b>Pacing interval</b> and <b>Peak cutoff</b>, then click <span class="btn">Cal. Photobleaching</span> again. To undo, click <span class="btn">Reset Photobleaching</span>.</p>
+</div></section>
+
+<section class="step" id="t8"><div>
+<h3><span class="secno">3.8</span>Calculate transients</h3>
+<ol><li>Click <span class="btn">Calculate transients</span> at the top of Transient analysis.</li></ol>
+<figure>
+  <a href="assets/img/09-transients.png"><img src="assets/img/09-transients.png" alt="Average transient graph and event table filled in" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>The average transient (thick white line) and individual beats (thin lines) appear at the upper right, with the event table below.</figcaption>
+</figure>
+<div class="ok"><span class="tag">Check</span>
+<ul>
+  <li>Status: <code>One average transient calculated from 14/14 selected events across 1 ROI trace(s). Pacing interval = 450 ms.</code></li>
+  <li>The number detected (14) should be close to the number of beats in the 7.6-s range (about 15).</li>
+  <li>Average graph: a steep rise at 0 ms, a peak near 30 ms, then a slower decay.</li>
+</ul></div>
+</div></section>
+
+<section class="step" id="t9"><div>
+<h3><span class="secno">3.9</span>Review the events</h3>
+<p>Each row of the event table is one beat. Scroll the table to the right for the decay columns.</p>
+<ul>
+  <li>Untick <b>Use</b> to remove a beat from the average and summary; the average graph redraws immediately.</li>
+  <li>Good reasons to exclude: two overlapping peaks, a spike caused by movement, or a clearly different shape.</li>
+  <li>Use the event time (<b>Ab_start</b>) to zoom to that beat in the detail graph.</li>
+</ul>
+<p>Column meanings are in <a href="#ref-analysis">Button reference – event table</a>.</p>
+</div></section>
+
+<section class="step" id="t10"><div>
+<h3><span class="secno">3.10</span>Save the ROI</h3>
+<ol><li>Click <span class="btn">Save ROI</span> in Controls.</li></ol>
+<figure>
+  <a href="assets/img/10-save-roi.png"><img src="assets/img/10-save-roi.png" alt="After Save ROI, the ROI 1 summary appears in the Saved ROI table" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>The ROI is locked in white with a number, and one summary row is added to the <b>Saved ROI</b> table at the lower right.</figcaption>
+</figure>
+<div class="ok"><span class="tag">Check: expected values for the example (v0.1.0)</span>
+<p>These example values use the original v0.1.0 with Pacing interval manually set to 450 ms and photobleaching correction applied, not the default 500 ms. Values vary with ROI position.</p>
+<div class="tw"><table>
+<tr><th>Tran N</th><th>Tran Amp dF/F0</th><th>Tran Peak ms</th><th>Tran Max d(F/F0)/dt</th><th>Decay 10% ms</th><th>Decay 50% ms</th><th>Decay 90% ms</th></tr>
+<tr><td class="v">14</td><td class="v">≈ 1.47</td><td class="v">≈ 28.6</td><td class="v">≈ 74</td><td class="v">≈ 23.6</td><td class="v">≈ 61.5</td><td class="v">≈ 133.5</td></tr>
+</table></div></div>
+<p>The workspace is cleared after saving. <b>To analyze another cell, repeat from step 3 (Add ROI).</b> The background ROI and analysis range are kept.</p>
+</div></section>
+
+<section class="step" id="t11"><div>
+<h3><span class="secno">3.11</span>Export the results</h3>
+<ol><li>Click <span class="btn">Save</span> in Controls.</li></ol>
+<p>A folder <code>MOSAIC_example_2Hz_ana</code> is created next to the ND2 file with five files. Their contents are described in <a href="#outputs">6. Reading the output files</a>.</p>
+<figure style="max-width:420px">
+  <a href="assets/img/11-roi-output.jpg"><img src="assets/img/11-roi-output.jpg" alt="ROI.jpg: saved ROI 1 drawn as a white rectangle on the first frame" loading="lazy" width="288" height="240"></a>
+  <figcaption><code>ROI.jpg</code> records which cells were analyzed.</figcaption>
+</figure>
+<div class="ok"><span class="tag">Check</span><p>Status: <code>Saved 1 checked ROI(s) to …\MOSAIC_example_2Hz_ana.</code></p></div>
+<p>Saved ROIs with <b>Use</b> unticked are not exported. Clicking <span class="btn">Save</span> again for the same file overwrites the previous results.</p>
+</div></section>
+
+<section class="step" id="t12"><div>
+<h3><span class="secno">3.12</span>Reload the analysis</h3>
+<ol>
+  <li>Next time, start MOSAIC and click <span class="btn">Load Info</span>.</li>
+  <li>Select <code>MOSAIC_example_2Hz_ana\analysis_info.json</code>.</li>
+  <li>The ND2 file reopens with the saved ROIs and background ROI. Click a row in the Saved ROI table to show that ROI's analysis.</li>
+</ol>
+<figure>
+  <a href="assets/img/12-load-info.png"><img src="assets/img/12-load-info.png" alt="Saved ROI 1 and its analysis restored with Load Info" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>Restored ROI 1 with its average transient and event table</figcaption>
+</figure>
+<div class="warn"><span class="tag">Note</span><p>The JSON stores the <b>path</b> of the ND2 file. If the ND2 file is moved or renamed after export, <code>Movie file not found</code> appears and it cannot be loaded.</p></div>
+<p>This completes the analysis procedure. Analyze your own recordings in the same order.</p>
+</div></section>
+
+<!-- ============ 4. REFERENCE ============ -->
+<h2 id="reference"><span class="secno">4</span>Button reference</h2>
+<p>Numbers in the pictures match the numbers in the tables. Each entry says <b>what it does</b> and <b>when and how to set it</b>.</p>
+
+<h3 id="ref-controls"><span class="secno">4.1</span>Controls panel</h3>
+<div class="fig-split" style="grid-template-columns:minmax(0,300px) minmax(0,1fr);align-items:start">
+<figure style="margin-top:0">
+  <a href="assets/img/panel-controls.png"><img src="assets/img/panel-controls.png" alt="Controls panel with numbered controls" loading="lazy" width="303" height="1102"></a>
+  <figcaption>The whole Controls panel (scroll down in the app)</figcaption>
+</figure>
+<div class="tw" style="margin:0"><table>
+<tr><th class="n">#</th><th>Name</th><th>What it does · how to set it</th></tr>
+<tr><td colspan="3"><b>File</b></td></tr>
+<tr><td class="n"><span class="num">1</span></td><td><span class="btn">Open ND2</span></td><td>Opens a <code>.nd2</code> file. Opening another file clears current and saved ROIs, so click <span class="btn">Save</span> first.</td></tr>
+<tr><td class="n"><span class="num">2</span></td><td><span class="btn">Close ND</span></td><td>After confirmation, closes the file and clears all ROIs and analyses.</td></tr>
+<tr><td class="n"><span class="num">3</span></td><td>File path</td><td>Path of the open file; it can be selected and copied.</td></tr>
+<tr><td class="n"><span class="num">4</span></td><td><span class="btn">Save</span></td><td>Exports saved ROIs (those with <b>Use</b> ticked) to the <code>&lt;file name&gt;_ana</code> folder. Enabled after at least one <span class="btn">Save ROI</span>.</td></tr>
+<tr><td class="n"><span class="num">5</span></td><td><span class="btn">Load Info</span></td><td>Restores a previous analysis from <code>analysis_info.json</code>.</td></tr>
+<tr><td colspan="3"><b>Playback</b></td></tr>
+<tr><td class="n"><span class="num">6</span></td><td><span class="btn">Play</span> / <span class="btn">Pause</span></td><td>Plays or pauses in real time using the recorded timestamps. Use it to see whether cells beat or move.</td></tr>
+<tr><td class="n"><span class="num">7</span></td><td>Frame label</td><td><code>Frame: current / total | Time: …</code>. Time is the value stored in the ND2 file and can be a very large number (<a href="#limits">limitation 6</a>).</td></tr>
+<tr><td class="n"><span class="num">8</span></td><td>Frame slider</td><td>Drag to move to a frame; the white dashed line in the graphs follows.</td></tr>
+<tr><td class="n"><span class="num">9</span></td><td>Frame number box</td><td>Type a frame number. It starts at 0 (the Frame label starts at 1).</td></tr>
+<tr><td colspan="3"><b>Background</b></td></tr>
+<tr><td class="n"><span class="num">10</span></td><td><span class="btn">Add Background</span></td><td>Places a blue circular background ROI (120 × 120 px) in the center. Drag it to a cell-free area. Its mean brightness is subtracted from every cell trace, frame by frame.</td></tr>
+<tr><td class="n"><span class="num">11</span></td><td><span class="btn">Recommend Background</span></td><td>Tests 100 random circles of radius R and places the background where the mean over the first 10 s is darkest. Check the result by eye.</td></tr>
+<tr><td class="n"><span class="num">12</span></td><td>R (radius)</td><td>Radius (px) of the recommended background circle. Default 10. A larger circle in a wide empty area gives less noise.</td></tr>
+<tr><td class="n"><span class="num">13</span></td><td><span class="btn">Clear Background ROI</span></td><td>Removes the background ROI; traces are then not background-subtracted.</td></tr>
+<tr><td colspan="3"><b>ROI</b></td></tr>
+<tr><td class="n"><span class="num">14</span></td><td>Shape</td><td>Shape of the next ROI: <i>Ellipse</i> (round cells or regions) or <i>Rectangle</i> (rod-shaped cells). Both can be rotated.</td></tr>
+<tr><td class="n"><span class="num">15</span></td><td><span class="btn">Add ROI</span></td><td>Adds an 80 × 80 px ROI. Several ROIs are analyzed together (ROI 1, ROI 2 …).</td></tr>
+<tr><td class="n"><span class="num">16</span></td><td><span class="btn">(op) Auto ROI</span></td><td>Optional. Replaces the last ROI by a polygon around the pixels that change most (top 10%) during the first 3 s. Click again to undo.</td></tr>
+<tr><td class="n"><span class="num">17</span></td><td><span class="btn">Calculate</span></td><td>Calculates mean brightness minus background for each ROI and draws it. Click again after changing an ROI. The first click loads the whole movie and takes time.</td></tr>
+<tr><td class="n"><span class="num">18</span></td><td><span class="btn">Save ROI</span></td><td>Stores the traces, events, and summaries of the current ROIs and locks them. The workspace is cleared for the next cell.</td></tr>
+<tr><td class="n"><span class="num">19</span></td><td><span class="btn">Clear ROIs</span></td><td>Removes unsaved ROIs and their analyses (saved ROIs remain).</td></tr>
+<tr><td colspan="3"><b>Photobleaching</b></td></tr>
+<tr><td class="n"><span class="num">20</span></td><td><span class="btn">Cal. Photobleaching</span></td><td>Draws a preview of a robust straight-line baseline fit. Yellow dashed = fit; red points = baseline used.</td></tr>
+<tr><td class="n"><span class="num">21</span></td><td><span class="btn">Confirm Photobleaching</span></td><td>Applies the correction (trace turns yellow). Transient analysis is cleared; calculate it again.</td></tr>
+<tr><td class="n"><span class="num">22</span></td><td><span class="btn">Reset Photobleaching</span></td><td>Returns to the uncorrected trace and default settings.</td></tr>
+<tr><td class="n"><span class="num">23</span></td><td>Pre <span class="v">50 ms</span></td><td>Time excluded from the baseline <b>before</b> each beat. Increase it if the start of the rise is mixed into the red points.</td></tr>
+<tr><td class="n"><span class="num">24</span></td><td>Post <span class="v">200 ms</span></td><td>Time excluded <b>after</b> each beat's recovery. Increase it if the decay tail is mixed into the red points.</td></tr>
+<tr><td class="n"><span class="num">25</span></td><td>Base <span class="v">10 %</span></td><td>Minimum fraction of the fit window that must remain as baseline; otherwise the ROI is not corrected (Status shows <code>skipped</code>). Lower it when fast pacing leaves little baseline.</td></tr>
+<tr><td class="n"><span class="num">26</span></td><td>Fit S</td><td>Start (s) of the fit window. By default it follows the Tran. range; once changed by hand, your value is kept.</td></tr>
+<tr><td class="n"><span class="num">27</span></td><td>Fit E</td><td>End (s) of the fit window.</td></tr>
+<tr><td class="n"><span class="num">28</span></td><td>Robust <span class="v">1.0 ×</span></td><td>Sensitivity to outlying points. Smaller values reduce their influence more. Usually leave at 1.0.</td></tr>
+<tr><td colspan="3"><b>Status</b></td></tr>
+<tr><td class="n"><span class="num">29</span></td><td>Status</td><td>Describes the result or error of the last action. Always check it.</td></tr>
+</table></div>
+</div>
+
+<h3 id="ref-graph"><span class="secno">4.2</span>Graph analysis panel</h3>
+<figure>
+  <a href="assets/img/panel-graph.png"><img src="assets/img/panel-graph.png" alt="Graph analysis panel with numbered controls" loading="lazy" width="1628" height="393"></a>
+</figure>
+<div class="tw"><table>
+<tr><th class="n">#</th><th>Name</th><th>What it does · how to set it</th></tr>
+<tr><td class="n"><span class="num">1</span></td><td>Tran. Start</td><td>Start (s) of the transient analysis range; linked to the left edge of the orange band.</td></tr>
+<tr><td class="n"><span class="num">2</span></td><td>Tran. End</td><td>End (s) of the range. Leave at least one Pacing interval after the last beat.</td></tr>
+<tr><td class="n"><span class="num">3</span></td><td>Overview graph</td><td>Trace of the whole recording. Drag the <span class="sw tran"></span>orange band to set the analysis range. White dashed line = current frame. This graph does not zoom.</td></tr>
+<tr><td class="n"><span class="num">4</span></td><td>Detail view X</td><td>Exact time range (Start/End, s) of the detail graph.</td></tr>
+<tr><td class="n"><span class="num">5</span></td><td>Detail view Y</td><td>Exact intensity range of the detail graph.</td></tr>
+<tr><td class="n"><span class="num">6</span></td><td>Detail graph</td><td>Mouse wheel = zoom, drag = pan. Use it to inspect peak shapes and fitted lines.</td></tr>
+</table></div>
+
+<h3 id="ref-analysis"><span class="secno">4.3</span>Transient analysis panel</h3>
+<div class="fig-split" style="grid-template-columns:minmax(0,480px) minmax(0,1fr);align-items:start">
+<figure style="margin-top:0">
+  <a href="assets/img/panel-analysis.png"><img src="assets/img/panel-analysis.png" alt="Transient analysis panel with numbered controls" loading="lazy" width="588" height="721"></a>
+</figure>
+<div class="tw" style="margin:0"><table>
+<tr><th class="n">#</th><th>Name</th><th>What it does · how to set it</th></tr>
+<tr><td class="n"><span class="num">1</span></td><td><span class="btn">Calculate transients</span></td><td>Detects beats in the Tran. range and builds the average and table. Click again after changing settings.</td></tr>
+<tr><td class="n"><span class="num">2</span></td><td>Peak cutoff <span class="v">3 ×</span></td><td>How many times the baseline noise a peak must exceed to count as a beat. Raise it (4–5) if noise is detected; lower it (2) if small beats are missed.</td></tr>
+<tr><td class="n"><span class="num">3</span></td><td>Pacing interval <span class="v">500 ms</span></td><td>Minimum spacing between beats and the analysis window after each beat. The default is 500 ms; this example uses a manually entered value of 450 ms. <a href="#limits">Limitation 1</a></td></tr>
+<tr><td class="n"><span class="num">4</span></td><td>Before start <span class="v">50 ms</span></td><td>Period before onset; its mean is F₀ (reference brightness). Keep it within the flat interval between beats.</td></tr>
+<tr><td class="n"><span class="num">5–7</span></td><td>Decay 1 / 2 / 3 <span class="v">10 / 50 / 90 %</span></td><td>Which decay levels (percent of amplitude lost after the peak) to report. Click <span class="btn">Calculate transients</span> after changing them.</td></tr>
+<tr><td class="n"><span class="num">8</span></td><td>Average transient graph</td><td>Thin lines = ticked individual beats; thick line = mean (F/F₀). X axis: time from onset.</td></tr>
+<tr><td class="n"><span class="num">9</span></td><td>Event table</td><td>One row per beat; <b>Use</b> includes or excludes it. Columns are explained below.</td></tr>
+<tr><td class="n"><span class="num">10</span></td><td>Saved ROI table</td><td>One row per saved ROI; <b>Use</b> = include in export. Click a row to show that ROI's analysis again.</td></tr>
+</table></div>
+</div>
+
+<h4>Event table columns</h4>
+<div class="tw"><table>
+<tr><th>Column</th><th>Meaning</th><th>Unit</th></tr>
+<tr><td><b>Use</b></td><td>Ticked = included in average and summary</td><td></td></tr>
+<tr><td><b>Event</b></td><td>ROI name and beat number (e.g. ROI 1 #3)</td><td></td></tr>
+<tr><td><b>Ab_start</b></td><td>Onset time (10% of amplitude), from recording start</td><td class="v">s</td></tr>
+<tr><td><b>Ab_peak</b></td><td>Peak time</td><td class="v">s</td></tr>
+<tr><td><b>Peak time ms</b></td><td>Time to peak = Ab_peak − Ab_start</td><td class="v">ms</td></tr>
+<tr><td><b>Amp dF/F0</b></td><td>(peak − baseline) ÷ F₀</td><td class="v">ratio</td></tr>
+<tr><td><b>Max d(F/F0)/dt</b></td><td>Steepest rise between onset and peak</td><td class="v">s⁻¹</td></tr>
+<tr><td><b>Ab_decay X%</b></td><td>Time when the amplitude has decreased by X%</td><td class="v">s</td></tr>
+<tr><td><b>Decay time X% ms</b></td><td>Time from peak to X% decay</td><td class="v">ms</td></tr>
+</table></div>
+<p><code>NA</code> means the value could not be measured (for example, the trace did not fall to 90% within the analysis window).</p>
+<h4>Saved ROI table columns</h4>
+<p><b>ROI</b> (number), <b>Tran N</b> (number of ticked beats), <b>Tran Amp dF/F0</b>, <b>Tran Peak ms</b>, <b>Tran Max d(F/F0)/dt</b>, <b>Tran Decay X% ms</b>: all are <b>means</b> over the ticked beats. While a saved ROI is displayed, changing <b>Use</b> in the event table updates these values.</p>
+
+<!-- ============ 5. SETTINGS ============ -->
+<h2 id="settings"><span class="secno">5</span>Choosing settings</h2>
+<p>What to decide for your own data, in order.</p>
+<div class="tw"><table>
+<tr><th>Order</th><th>Setting</th><th>Recommendation</th><th>How to check</th></tr>
+<tr><td class="v">1</td><td>Background ROI</td><td>No cells or debris, not in the dark image corner shadow; as large as possible</td><td>Play the movie and make sure nothing passes through</td></tr>
+<tr><td class="v">2</td><td>Cell ROI</td><td>Slightly inside the cell border, not overlapping neighbors</td><td>The cell stays inside the ROI across frames</td></tr>
+<tr><td class="v">3</td><td>Tran. range</td><td>Stable pacing only, with at least one Pacing interval after the last beat</td><td>Count the peaks in the range</td></tr>
+<tr><td class="v">4</td><td>Pacing interval</td><td>Default: 500 ms. Manually use 450 ms for this example; for other recordings, choose the value by inspecting waveforms and detected events</td><td><b>Tran N ≈ range length × pacing frequency</b></td></tr>
+<tr><td class="v">5</td><td>Peak cutoff</td><td>Start at 3</td><td>Lower if beats are missed; raise if noise is detected</td></tr>
+<tr><td class="v">6</td><td>Photobleaching</td><td>Only when the baseline visibly drifts; default settings</td><td>Red points lie only on the flat bottom</td></tr>
+<tr><td class="v">7</td><td>Before start</td><td>50 ms (shorter than the flat interval between beats)</td><td>The average graph is flat left of 0 ms</td></tr>
+<tr><td class="v">8</td><td>Decay levels</td><td>10 / 50 / 90 % (manuscript)</td><td>Many NA values: check that the analysis window (Pacing interval) is not too short</td></tr>
+</table></div>
+<div class="note"><span class="tag">When reporting</span><p>In papers and reports, state the <b>Pacing interval, Peak cutoff, Before start, whether photobleaching correction was applied</b>, and the MOSAIC version (v0.1.0).</p></div>
+
+<!-- ============ 6. OUTPUTS ============ -->
+<h2 id="outputs"><span class="secno">6</span>Reading the output files</h2>
+<p><span class="btn">Save</span> writes to the <code>&lt;file name&gt;_ana</code> folder next to the ND2 file.</p>
+<div class="tw"><table>
+<tr><th>File</th><th>Contents</th><th>Columns</th></tr>
+<tr><td><code>analysis.xlsx</code></td><td>Per-ROI summary (same as the Saved ROI table), ready for statistics</td><td>ROI · Tran N · Tran Amp dF/F0 · Tran Peak ms · Tran Max d(F/F0)/dt · Tran Decay X% ms</td></tr>
+<tr><td><code>rawtrace.xlsx</code></td><td>Whole trace of each ROI (background-subtracted, <b>before</b> photobleaching correction)</td><td>Time s · ROI 1 · ROI 2 …</td></tr>
+<tr><td><code>transient.xlsx</code></td><td>Average transient curve (F/F₀) of each ROI, for figures</td><td>ROI n transient time s · ROI n transient F/F0 (two columns per ROI)</td></tr>
+<tr><td><code>ROI.jpg</code></td><td>First frame with saved ROI outlines and numbers</td><td></td></tr>
+<tr><td><code>analysis_info.json</code></td><td>Complete record for <span class="btn">Load Info</span> (ROI positions, traces, event selections)</td><td></td></tr>
+</table></div>
+<p>Sizes for the example: <code>analysis.xlsx</code> 2 KB, <code>rawtrace.xlsx</code> 95 KB, <code>transient.xlsx</code> 8 KB, <code>ROI.jpg</code> 36 KB, <code>analysis_info.json</code> 370 KB.</p>
+
+<!-- ============ 7. LIMITS ============ -->
+<h2 id="limits"><span class="secno">7</span>Known limitations (v0.1.0)</h2>
+<p>These behaviors of the current version are documented so that results can be interpreted correctly. They will be reviewed in a future release; any change will be listed in the release notes.</p>
+
+<div class="warn">
+<span class="tag">Limitation 1</span>
+<h3 style="margin-top:0">Pacing interval and the number of detected beats</h3>
+<p><b>Pacing interval</b> is used both as the minimum spacing between beats and as the analysis window after each beat. When beats occur at an interval <b>equal to or shorter than</b> the value entered, some are not reported and <b>Tran N</b> is smaller than the real number of beats. Photobleaching correction uses the same detection, so missed beats can be included among the baseline points (red points).</p>
+<div class="fig-split">
+<figure>
+  <a href="assets/img/limit-pacing-500ms.png"><img src="assets/img/limit-pacing-500ms.png" alt="Pacing interval 500 ms: only 7 beats detected" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>Example with 500 ms: <b>7</b> beats detected</figcaption>
+</figure>
+<figure>
+  <a href="assets/img/limit-pacing-450ms.png"><img src="assets/img/limit-pacing-450ms.png" alt="Pacing interval 450 ms: 14 beats detected" loading="lazy" width="1600" height="1000"></a>
+  <figcaption>Same data with 450 ms: <b>14</b> beats detected</figcaption>
+</figure>
+</div>
+<ul>
+  <li>Manually enter 450 ms for this example; do not assume the same rule applies to every recording.</li>
+  <li>Always compare <b>Tran N</b> with the expected number of beats in the range.</li>
+  <li>Set Pacing interval before <span class="btn">Cal. Photobleaching</span>.</li>
+  <li>Record and report the value used for each analysis.</li>
+</ul>
+</div>
+
+<div class="tw"><table>
+<tr><th>#</th><th>Limitation</th><th>Details and what to do</th></tr>
+<tr><td class="v">2</td><td>Memory</td><td>The first <span class="btn">Calculate</span> loads the whole movie. Required ≈ frames × height × width × bytes per pixel (e.g. 12,406 frames of 600 × 600 8-bit ≈ 4.5 GB). With too little RAM the program becomes very slow or closes.</td></tr>
+<tr><td class="v">3</td><td>Display range</td><td>Fixed 0–255 display. Images above 8 bits look white, but measurements use the original values and are correct.</td></tr>
+<tr><td class="v">4</td><td>ND2 structure</td><td>Single-channel time-lapse (T × Y × X) only. Multi-channel, Z-stack, and multi-position files are not supported.</td></tr>
+<tr><td class="v">5</td><td>Fixed internal settings</td><td>Smoothing window 20 ms, onset = 10% of amplitude, recovery = below 25% of amplitude for 30 ms. Measurements use the smoothed trace, so very fast upstrokes can show a slightly longer time to peak.</td></tr>
+<tr><td class="v">6</td><td>Frame time display</td><td>Shows the raw value stored in the ND2 file, which can be very large. Graphs and measurements use time from the first frame.</td></tr>
+<tr><td class="v">7</td><td>Features not in the interface</td><td>The code contains caffeine-induced (SR) Ca²⁺ release analysis, but v0.1.0 has no buttons for it.</td></tr>
+<tr><td class="v">8</td><td>Not responding</td><td>During movie loading, Auto ROI, and Recommend Background the window appears frozen. Wait for Status to change.</td></tr>
+</table></div>
+
+<!-- ============ 8. TROUBLE ============ -->
+<h2 id="trouble"><span class="secno">8</span>Troubleshooting</h2>
+<div class="tw"><table>
+<tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr>
+<tr><td><code>Failed to create .venv</code> in the console</td><td>Python missing or not on PATH, or a synced folder</td><td>Install Python with the PATH option → move MOSAIC to a local folder → delete <code>.venv</code> → launch again</td></tr>
+<tr><td><code>WinError 32</code> (file in use by another process)</td><td>Dropbox, OneDrive, or antivirus locks installation files</td><td>Move out of the synced folder, delete <code>.venv</code>, launch again</td></tr>
+<tr><td>Console window closes immediately</td><td>The error message cannot be read</td><td>In the MOSAIC folder, type <code>cmd</code> in the address bar → run <code>run_app.bat</code> to read the message</td></tr>
+<tr><td>Very slow or closes after <span class="btn">Calculate</span></td><td>Not enough memory</td><td>Close other programs or use a computer with more RAM</td></tr>
+<tr><td>Image is all white or very dark</td><td>Above 8 bits / dim recording</td><td>Display only; measurements are unaffected</td></tr>
+<tr><td><code>No transients detected</code></td><td>Range or settings</td><td>Check the Tran. range → lower Peak cutoff → check Pacing interval → check ROI and background positions</td></tr>
+<tr><td>Tran N lower than the number of beats</td><td>Limitation 1</td><td>Inspect waveforms and detected events; check Pacing interval (450 ms in this example)</td></tr>
+<tr><td>Decay time is NA</td><td>Trace did not fall to that level within the window</td><td>Leave room at the end of Tran.; check the event</td></tr>
+<tr><td><code>skipped</code> in photobleaching Status</td><td>Too few baseline points</td><td>Lower Base, widen Fit S/E, shorten Pre/Post</td></tr>
+<tr><td><span class="btn">Save</span> is grey</td><td>No saved ROI</td><td>Click <span class="btn">Save ROI</span> first</td></tr>
+<tr><td><code>Movie file not found</code></td><td>ND2 file moved or renamed</td><td>Put it back at the original path</td></tr>
+</table></div>
+
+<!-- ============ 9. GLOSSARY ============ -->
+<h2 id="glossary"><span class="secno">9</span>Glossary</h2>
+<dl class="terms">
+  <dt>ND2</dt><dd>Image file saved by Nikon NIS-Elements; it contains the frames and their acquisition times.</dd>
+  <dt>ROI</dt><dd>Region of interest: the area whose brightness is measured, such as one cell.</dd>
+  <dt>Background ROI</dt><dd>A cell-free area used to subtract camera noise and background brightness.</dd>
+  <dt>Trace</dt><dd>Mean brightness inside an ROI plotted over time.</dd>
+  <dt>Ca²⁺ transient</dt><dd>One waveform per beat: calcium fluorescence rises quickly and decays more slowly.</dd>
+  <dt>F₀, F/F₀</dt><dd>F₀ = reference brightness just before a beat (mean over Before start). F/F₀ = brightness ÷ F₀, which makes cells of different brightness comparable.</dd>
+  <dt>Onset</dt><dd>Start of a beat: the time the rise reaches 10% of the amplitude.</dd>
+  <dt>Time to peak</dt><dd>Time from onset to peak.</dd>
+  <dt>Decay X%</dt><dd>Time after the peak until the amplitude has decreased by X%. Decay 50% is the half-decay time.</dd>
+  <dt>Photobleaching</dt><dd>Gradual loss of fluorescence under continuous illumination.</dd>
+  <dt>Pacing interval</dt><dd>Time between electrical stimuli. 2 Hz = 500 ms.</dd>
+  <dt>Prominence / Peak cutoff</dt><dd>How far a peak rises above its surroundings. Peak cutoff sets the threshold as a multiple of the noise.</dd>
+</dl>
+
+<section id="patch-note" class="note">
+<h2>0.1.1 note (not applied)</h2>
+<p>Proposed change: <b>change the default Pacing interval from 500 ms to 450 ms</b>.</p>
+<p>This guide covers the original <b>v0.1.0</b>, whose default remains <b>500 ms</b>. This change has not been applied to the app. A future 0.1.1 patch would change only this default, leaving the detection algorithm and other functionality unchanged.</p>
+</section>
+<footer>
+<p>MOSAIC v0.1.0 · Screenshots and expected values in this guide were generated automatically with v0.1.0 and the example file. · If you use MOSAIC, please cite the accompanying manuscript (to be added upon publication). · <a href="guide-ko.html" class="lang-switch">한국어판</a></p>
+</footer>
+</div>
+</main>
+</div>
+
+<script>
+// Keep the reader at the same section when switching language.
+(function () {
+  function sync() {
+    document.querySelectorAll("a.lang-switch").forEach(function (a) {
+      a.setAttribute("href", "guide-ko.html" + location.hash);
+    });
+  }
+  window.addEventListener("hashchange", sync);
+  sync();
+})();
+</script>
+</body>
+</html>

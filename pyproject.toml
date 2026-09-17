@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mosaic"
+version = "0.1.0"
+description = "MOSAIC: GUI application for Nikon ND2 calcium imaging analysis"
+requires-python = ">=3.9"
+dependencies = [
+  "nd2==0.11.3",
+  "numpy>=1.26",
+  "PySide6>=6.7",
+  "pyqtgraph>=0.13",
+  "scipy>=1.11",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

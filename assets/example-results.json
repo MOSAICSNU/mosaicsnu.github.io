@@ -1,0 +1,45 @@
+{
+  "photobleaching_status": "Photobleaching preview calculated (ratio=1). Press Confirm Photobleaching to apply.",
+  "transient_status_450": "One average transient calculated from 14/14 selected events across 1 ROI trace(s). Pacing interval = 450 ms.",
+  "events_450": 14,
+  "events_500": 7,
+  "transient_status_500": "One average transient calculated from 7/7 selected events across 1 ROI trace(s). Pacing interval = 500 ms.",
+  "saved_summary": {
+    "transient_n": 14,
+    "transient_amp": 1.4747951114030138,
+    "transient_peak_time_ms": 28.571265084402903,
+    "transient_max_dydt": 74.36545335881797,
+    "transient_decay_10_ms": 23.590318228311396,
+    "transient_decay_50_ms": 61.48867880666275,
+    "transient_decay_90_ms": 133.5165114163156
+  },
+  "saved_row": [
+    "ROI 1",
+    "14",
+    "1.4748",
+    "28.571",
+    "74.3655",
+    "23.590",
+    "61.489",
+    "133.517"
+  ],
+  "saved_headers": [
+    "ROI",
+    "Tran N",
+    "Tran Amp dF/F0",
+    "Tran Peak ms",
+    "Tran Max d(F/F0)/dt",
+    "Tran Decay 10% ms",
+    "Tran Decay 50% ms",
+    "Tran Decay 90% ms"
+  ],
+  "export_status": "Saved 1 checked ROI(s) to D:\\MOSAIC-example\\MOSAIC_example_2Hz_ana.",
+  "load_status": "Loaded 1 saved ROI(s) from analysis_info.json.",
+  "recording": {
+    "frames": 4000,
+    "height": 240,
+    "width": 288,
+    "dtype": "uint8",
+    "duration_s": 8.037986755371094
+  }
+}
